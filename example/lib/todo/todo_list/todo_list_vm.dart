@@ -1,5 +1,5 @@
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 import 'package:rxmvvm_example/todo/model/todo_model.dart';
 
 enum TodoListAction {

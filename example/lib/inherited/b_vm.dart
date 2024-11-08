@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'package:rxmvvm/rxmvvm.dart';
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:rxmvvm_example/inherited/a_vm.dart';
 
 import '../vm/login_vm.dart';

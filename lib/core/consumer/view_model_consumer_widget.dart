@@ -1,9 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api
 
-part of rxmvvm;
+part of easy_rxmvvm;
 
-/// ViewModelConsumer 的构建器类型
-typedef ViewModelConsumerBuilder<T extends ViewModel> = Widget Function(
+typedef RetrieveViewModelBuilder<T extends ViewModel> = Widget Function(
+    BuildContext context, T? viewModel, Widget? child);
+
+typedef SingleViewModelBuilder<T extends ViewModel> = Widget Function(
     BuildContext context, T viewModel, Widget? child);
 
 /// ViewModelConsumer 组件，允许在 Widget 树中消费 ViewModel
@@ -32,7 +34,7 @@ class ViewModelConsumer extends ViewModelConsumerStatefulWidget {
   static ViewModelConsumer single<VM extends ViewModel>({
     Key? key,
     required ViewModelFactory<VM> creator,
-    ViewModelConsumerBuilder<VM>? builder,
+    SingleViewModelBuilder<VM>? builder,
     Widget? child,
     ViewModelShareStrategy shareStrategy = ViewModelShareStrategy.none,
   }) {
@@ -57,7 +59,7 @@ class ViewModelConsumer extends ViewModelConsumerStatefulWidget {
   /// 一个不创建 ViewModel 的 ViewModelConsumer，用于在 Widget 树中某个位置获取 ViewModel
   static ViewModelConsumer retrieve<VM extends ViewModel>({
     Key? key,
-    required ViewModelConsumerBuilder<VM> builder,
+    required RetrieveViewModelBuilder<VM> builder,
     Widget? child,
   }) {
     return ViewModelConsumer(
@@ -66,11 +68,7 @@ class ViewModelConsumer extends ViewModelConsumerStatefulWidget {
       shareStrategy: ViewModelShareStrategy.none,
       builder: (context, child) {
         final viewModel = context.getViewModel<VM>();
-        assert(
-          viewModel != null,
-          'ViewModel of type $VM not found in context',
-        );
-        return builder(context, viewModel!, child);
+        return builder(context, viewModel, child);
       },
       child: child,
     );
@@ -90,9 +88,13 @@ class _ViewModelConsumerState extends State<ViewModelConsumer>
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder?.call(context, widget.child) ??
-        widget.child ??
-        const SizedBox.shrink();
+    final builder = widget.builder;
+    final child = widget.child;
+
+    if (builder == null) {
+      return child ?? const SizedBox.shrink();
+    }
+    return builder(context, child);
   }
 
   @override
@@ -121,14 +123,9 @@ class ConsumerStatefulElement extends StatefulElement {
 
   @override
   Widget build() {
-    // 使用 Builder 确保获取到正确的 BuildContext
+    consumer.updateContext(this);
     return consumer.buildProviderTree(
-      Builder(
-        builder: (context) {
-          consumer.updateContext(context);
-          return super.build();
-        },
-      ),
+      super.build(),
     );
   }
 

@@ -1,8 +1,8 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 import 'package:rxmvvm_example/todo/todo_detail/todo_detail_page.dart';
 import 'package:rxmvvm_example/todo/todo_list/todo_list_vm.dart';
 

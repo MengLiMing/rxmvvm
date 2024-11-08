@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 typedef StreamConsumerBuilder<T> = Widget Function(
     BuildContext context, T data, Widget? child);

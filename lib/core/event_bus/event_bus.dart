@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// 全局事件总线
 class EventBus {

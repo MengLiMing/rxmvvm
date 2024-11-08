@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 typedef LogCallback = void Function(String message);
 

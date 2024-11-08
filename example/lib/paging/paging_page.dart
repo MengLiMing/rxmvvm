@@ -1,9 +1,9 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 import 'package:rxmvvm_example/paging/paging_vm.dart';
 import 'package:rxmvvm_example/rxmvvm_util/loading_mixin.dart';
 import 'package:rxmvvm_example/rxmvvm_util/refresh_controller_extension.dart';

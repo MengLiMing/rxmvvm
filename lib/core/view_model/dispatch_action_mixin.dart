@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// 事件动作，包含事件类型和可选的数据
 class EventAction<T> {

@@ -1,5 +1,5 @@
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:equatable/equatable.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 
 enum PageRequestState implements Equatable {
   /// 空闲状态

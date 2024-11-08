@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 extension ContextExtension on BuildContext {
   /// 获取当前的或共享的 ViewModel。

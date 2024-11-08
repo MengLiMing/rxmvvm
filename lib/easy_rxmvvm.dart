@@ -1,4 +1,4 @@
-library rxmvvm;
+library easy_rxmvvm;
 
 import 'dart:async';
 import 'dart:math' as math;
@@ -10,11 +10,10 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// consumer
-part 'core/consumer/retrieve.dart';
-part 'core/consumer/single.dart';
-part 'core/consumer/view_model_consumer.dart';
-part 'core/consumer/view_model_consumer_state_mixin.dart';
-part 'core/consumer/view_model_container.dart';
+part 'core/consumer/view_model_consumer_widget.dart';
+part 'core/consumer/view_model_retriever_mixin.dart';
+part 'core/consumer/view_model_single_mixin.dart';
+part 'core/consumer/view_model_state_mixin.dart';
 
 /// dispose_bag
 part 'core/dispose_bag/dispose_bag_mixin.dart';

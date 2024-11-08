@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_print, unused_local_variable
 
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 import 'package:rxmvvm_example/inherited/a_vm.dart';
 import 'package:rxmvvm_example/inherited/b_vm.dart';
 import 'package:rxmvvm_example/inherited/child_widget.dart';
@@ -69,7 +69,7 @@ class _InheritedPageState extends State<InheritedPage>
             shareStrategy: ViewModelShareStrategy.provider),
         ViewModelFactory<BViewModel>(
           () => BViewModel(),
-          shareStrategy: ViewModelShareStrategy.provider,
+          shareStrategy: ViewModelShareStrategy.stack,
         ),
       ];
 }

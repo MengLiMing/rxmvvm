@@ -1,5 +1,5 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:rxmvvm/rxmvvm.dart';
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:rxmvvm_example/rxmvvm_util/loading_mixin.dart';
 
 enum BindAction {

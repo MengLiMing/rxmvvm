@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// List 扩展方法
 extension ListExtension<T> on List<T> {

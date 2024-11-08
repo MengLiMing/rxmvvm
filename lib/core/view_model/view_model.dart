@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// ViewModel 的基类，提供配置功能
 abstract class ViewModel

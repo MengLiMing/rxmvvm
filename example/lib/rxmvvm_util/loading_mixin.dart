@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 
 /// 提供统一的loading管理
 mixin LoadingMixin<T> on DisposeMixin {

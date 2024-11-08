@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 extension StreamAsyncExtension<T> on Stream<T> {
   /// 将 Stream 与 ChangeNotifier 同步

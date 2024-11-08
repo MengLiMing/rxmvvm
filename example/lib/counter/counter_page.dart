@@ -1,5 +1,5 @@
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/material.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 
 import 'counter_vm.dart';
 

@@ -1,4 +1,4 @@
-import 'package:rxmvvm/rxmvvm.dart';
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 
 enum CounterEvent {
   increment,
@@ -13,7 +13,7 @@ class CounterViewModel extends ViewModel
   @override
   void config() {
     /// 开启打印日志
-    dispatchLogger.disposeBy(disposeBag);
+    dispatchLogger().disposeBy(disposeBag);
 
     onEventData<int>(CounterEvent.increment, (value) {
       counter.value += value;

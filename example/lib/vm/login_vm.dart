@@ -1,4 +1,4 @@
-import 'package:rxmvvm/rxmvvm.dart';
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 
 enum LoginManagerAction {
   login,

@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// dispose回调函数
 typedef DisposeHandler = void Function();

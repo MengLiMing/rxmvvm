@@ -1,4 +1,4 @@
-import 'package:rxmvvm/rxmvvm.dart';
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 
 import '../rxmvvm_util/loading_mixin.dart';
 import '../rxmvvm_util/page_request_mixin.dart';

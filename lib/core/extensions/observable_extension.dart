@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// 一些基础类型的便捷创建BehaviorSubject
 extension ObservableExtension<T extends Object> on T {

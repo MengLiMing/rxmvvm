@@ -1,6 +1,6 @@
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 import 'package:rxmvvm_example/bind/bind_vm.dart';
 
 class BindPage extends ViewModelConsumerStatefulWidget {
@@ -90,7 +90,4 @@ class _BindPageState extends State<BindPage>
 
   @override
   BindViewModel viewModelCreate() => BindViewModel();
-
-  @override
-  ViewModelShareStrategy get shareStrategy => ViewModelShareStrategy.provider;
 }

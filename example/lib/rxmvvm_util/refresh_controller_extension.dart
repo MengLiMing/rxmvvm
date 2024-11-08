@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxmvvm_example/rxmvvm_util/page_request_mixin.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 extension RefreshControllerRxExtension on RefreshController {
   StreamSubscription changeStatusBy(Stream<PageRequestState> stream) {

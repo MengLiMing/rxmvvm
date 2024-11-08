@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 mixin DisposeMixin {
   void dispose() {

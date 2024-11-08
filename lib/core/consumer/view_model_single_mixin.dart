@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// 只创建一个ViewModel
 mixin SingleViewModelMixin<T extends ViewModel, W extends StatefulWidget>

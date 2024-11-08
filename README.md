@@ -2,7 +2,13 @@
 
 基于 rxdart 的 mvvm 框架
 
-## 使用说明
+## 示例
+
+查看 [example](example) 目录获取更多示例。
+
+## 许可证
+
+MIT License
 
 ## 代码块
 

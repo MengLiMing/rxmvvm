@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 extension DisposeCallbackListExtension on List<DisposeHandler> {
   void disposeBy(DisposeBagMixin bag) {

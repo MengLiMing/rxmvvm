@@ -1,8 +1,7 @@
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 import 'package:rxmvvm_example/todo/todo_detail/todo_detail_vm.dart';
-import 'package:rxmvvm_example/todo/todo_list/todo_list_vm.dart';
 
 import '../todo_list/todo_list_page.dart';
 
@@ -37,42 +36,37 @@ class _TodoDetailPageState extends State<TodoDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelConsumer.retrieve<TodoListViewModel>(
-      builder: (context, a, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('详情'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('详情'),
+      ),
+      body: Column(
+        children: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                return const TodoListPage();
+              }));
+            },
+            child: const Text('跳转'),
           ),
-          body: Column(
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(CupertinoPageRoute(builder: (context) {
-                    return const TodoListPage();
-                  }));
-                },
-                child: const Text('跳转'),
-              ),
-              TextField(
-                controller: titleTextController,
-              ),
-              StreamBuilderFactory.buildBehavior(
-                viewModel.isCompleted,
-                builder: (context, value, _) {
-                  return CupertinoSwitch(
-                    value: value,
-                    onChanged: (value) => viewModel.dispatch(
-                      TodoDetailAction.changeCompleted,
-                      data: value,
-                    ),
-                  );
-                },
-              ),
-            ],
+          TextField(
+            controller: titleTextController,
           ),
-        );
-      },
+          StreamBuilderFactory.buildBehavior(
+            viewModel.isCompleted,
+            builder: (context, value, _) {
+              return CupertinoSwitch(
+                value: value,
+                onChanged: (value) => viewModel.dispatch(
+                  TodoDetailAction.changeCompleted,
+                  data: value,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

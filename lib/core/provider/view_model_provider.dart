@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// 一个 InheritedWidget，用于提供 ViewModel 给子 Widget
 ///

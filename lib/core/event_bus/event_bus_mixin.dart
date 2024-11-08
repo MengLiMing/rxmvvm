@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// 事件总线，用于在 widgets 和 viewmodel 之间传递事件
 /// 事件可以是任何类型，包括自定义的事件

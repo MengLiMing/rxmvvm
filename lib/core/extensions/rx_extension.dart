@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 typedef StreamMiddlewareTransfer<T> = Stream<T> Function(Stream<T>);
 

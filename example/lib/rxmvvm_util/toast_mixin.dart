@@ -1,5 +1,5 @@
+import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxmvvm/rxmvvm.dart';
 
 /// 提供统一的错误管理
 mixin ToastMixin on DisposeMixin {

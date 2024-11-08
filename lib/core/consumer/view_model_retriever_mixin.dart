@@ -1,4 +1,4 @@
-part of rxmvvm;
+part of easy_rxmvvm;
 
 /// RetrieveViewModelMixin 用于在 State 中检索 ViewModel
 mixin RetrieveViewModelMixin<T extends ViewModel, W extends StatefulWidget>
