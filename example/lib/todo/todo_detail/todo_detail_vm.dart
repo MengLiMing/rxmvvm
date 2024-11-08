@@ -20,7 +20,6 @@ class TodoDetailViewModel extends ViewModel
 
   @override
   void config() {
-    print(":Sasdasdasd");
     dispatchLogger().disposeBy(disposeBag);
 
     /// 切换

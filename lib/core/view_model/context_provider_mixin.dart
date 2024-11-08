@@ -12,14 +12,21 @@ mixin ContextProviderMixin on DisposeMixin {
   BuildContext? get context => _contextSubject.value?.target;
 
   /// 上下文变化的流
-  Stream<BuildContext?> get contextStream =>
-      _contextSubject.stream.map((ref) => ref?.target);
+  Stream<BuildContext> get contextStream => _contextSubject.stream
+      .map((ref) => ref?.target)
+      .whereNotNull()
+      .distinct();
 
   /// BuildContext变化重新获取对应类型的ViewModel
   Stream<T> getViewModel<T extends ViewModel>({
     bool listen = false,
   }) {
-    return contextStream.whereNotNull().map((context) {
+    if (_contextSubject.isClosed) {
+      RxLogger.warning('$runtimeType: Cannot get ViewModel after dispose');
+      return const Stream.empty();
+    }
+
+    return contextStream.asyncMap((context) async {
       try {
         return context.getViewModel<T>(inheritedListen: listen);
       } catch (error, stackTrace) {
@@ -40,6 +47,8 @@ mixin ContextProviderMixin on DisposeMixin {
     return getViewModel<T>(listen: listen).take(1).listen(
           onConfig,
           onError: (error, stackTrace) => RxLogger.logError(error, stackTrace),
+          onDone: () => RxLogger.log(
+              '$runtimeType: Configuration with ${T.toString()} completed'),
         );
   }
 
@@ -49,7 +58,15 @@ mixin ContextProviderMixin on DisposeMixin {
 
   @override
   void dispose() {
-    _contextSubject.close();
-    super.dispose();
+    try {
+      if (!_contextSubject.isClosed) {
+        RxLogger.log('$runtimeType: Disposing');
+        _contextSubject.close();
+      }
+    } catch (error, stackTrace) {
+      RxLogger.logError(error, stackTrace);
+    } finally {
+      super.dispose();
+    }
   }
 }
