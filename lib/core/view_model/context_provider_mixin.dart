@@ -60,7 +60,6 @@ mixin ContextProviderMixin on DisposeMixin {
   void dispose() {
     try {
       if (!_contextSubject.isClosed) {
-        RxLogger.log('$runtimeType: Disposing');
         _contextSubject.close();
       }
     } catch (error, stackTrace) {

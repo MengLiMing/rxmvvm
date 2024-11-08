@@ -17,8 +17,7 @@ part 'core/consumer/view_model_state_mixin.dart';
 
 /// dispose_bag
 part 'core/dispose_bag/dispose_bag_mixin.dart';
-part 'core/dispose_bag/dispose_bag_provider.dart';
-part 'core/dispose_bag/dispose_extension.dart';
+part 'core/dispose_bag/dispose_mixin.dart';
 
 /// event_bus
 part 'core/event_bus/event_bus.dart';
@@ -26,6 +25,7 @@ part 'core/event_bus/event_bus_mixin.dart';
 
 /// extension
 part 'core/extensions/context_extension.dart';
+part 'core/extensions/dispose_extension.dart';
 part 'core/extensions/list_extension.dart';
 part 'core/extensions/observable_extension.dart';
 part 'core/extensions/rx_extension.dart';

@@ -12,9 +12,6 @@ class CounterViewModel extends ViewModel
 
   @override
   void config() {
-    /// 开启打印日志
-    dispatchLogger().disposeBy(disposeBag);
-
     onEventData<int>(CounterEvent.increment, (value) {
       counter.value += value;
     }).disposeBy(disposeBag);

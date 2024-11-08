@@ -27,13 +27,19 @@ class EventAction<T> {
 typedef DispatchActionListener<T> = void Function(EventAction<T> action);
 
 /// 事件分发 Mixin
-mixin DispatchActionMixin<T> on DisposeMixin {
+mixin DispatchActionMixin<T> on ViewModel {
   late final _eventActionSubject = PublishSubject<EventAction<T>>();
 
   /// 事件流
   Stream<EventAction<T>> get eventActionStream => _eventActionSubject.stream;
 
   StreamSubscription<EventAction<T>>? _loggerSubscription;
+
+  @override
+  void beforeConfig() {
+    dispatchLogger().disposeBy(disposeBag);
+    super.beforeConfig();
+  }
 
   /// 事件日志记录器
   /// [tag] 自定义日志标签

@@ -4,14 +4,14 @@ part of easy_rxmvvm;
 abstract class ViewModel
     with DisposeMixin, DisposeBagProvider, ContextProviderMixin {
   /// 配置前回调
-  @protected
+  @mustCallSuper
   void beforeConfig() {}
 
   /// 配置当前ViewModel
   void config() {}
 
   /// 配置后回调
-  @protected
+  @mustCallSuper
   void afterConfig() {}
 
   @override

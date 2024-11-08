@@ -1,21 +1,19 @@
 # Changelog
 
-## [1.0.2] - 2024-11-07
+## [1.1.0] - 2024-11-07
 
 ### Changed
 
 - 优化了 ViewModelConsumer 的实现
   - 改进了 Provider 树的构建逻辑
-  - 优化了性能
+  - 删除了不必要的 Builder
   - 简化了代码结构
-- 改进了 ViewModelContainer（原 ViewModelCache）
+- 改进了 ViewModelContainer
   - 重命名为更准确的名称
   - 优化了内部实现
   - 改进了错误处理
 - 优化了 ContextProviderMixin
-  - 使用 WeakReference 管理 context
   - 改进了错误处理
-  - 优化了生命周期管理
 - 改进了 EventBus
   - 添加了更详细的日志记录
   - 优化了错误处理
@@ -23,6 +21,7 @@
 - 优化了 DisposeBag 机制
   - 改进了错误处理
   - 优化了资源释放流程
+  - 优化了日志打印
 
 ### Added
 
