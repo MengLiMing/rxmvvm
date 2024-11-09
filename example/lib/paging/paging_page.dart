@@ -61,7 +61,7 @@ class _PagingPageState extends State<PagingPage>
   ///
   /// beforeViewModelConfig是在对应viewModel.config执行之前调用
   @override
-  void onViewModelBeforeConfig(PagingViewModel viewModel) {
+  void onViewModelBeforeConfig() {
     [
       viewModel.onOnceLoadingState((value) {
         value ? EasyLoading.show() : EasyLoading.dismiss();

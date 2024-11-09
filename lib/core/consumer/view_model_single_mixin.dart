@@ -17,11 +17,11 @@ mixin SingleViewModelMixin<T extends ViewModel, W extends StatefulWidget>
 
   /// ViewModel 配置前回调
   @protected
-  void onViewModelBeforeConfig(T viewModel) {}
+  void onViewModelBeforeConfig() {}
 
   /// ViewModel 配置后回调
   @protected
-  void onViewModelConfigured(T viewModel) {}
+  void onViewModelConfigured() {}
 
   @override
   @nonVirtual
@@ -29,8 +29,8 @@ mixin SingleViewModelMixin<T extends ViewModel, W extends StatefulWidget>
         ViewModelFactory<T>(
           viewModelCreate,
           shareStrategy: shareStrategy,
-          beforeConfig: onViewModelBeforeConfig,
-          afterConfig: onViewModelConfigured,
+          beforeConfig: (_) => onViewModelBeforeConfig(),
+          afterConfig: (_) => onViewModelConfigured(),
         )
       ];
 }
