@@ -11,11 +11,11 @@ class LoginManagerViewModel extends ViewModel
 
   @override
   void config() {
-    onEvent(LoginManagerAction.login, (action) {
+    onEventOnly(LoginManagerAction.login, () {
       isLogin.value = true;
     }).disposeBy(disposeBag);
 
-    onEvent(LoginManagerAction.logout, (action) {
+    onEventOnly(LoginManagerAction.logout, () {
       isLogin.value = false;
     }).disposeBy(disposeBag);
   }

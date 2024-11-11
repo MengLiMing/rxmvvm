@@ -21,7 +21,7 @@ class TodoDetailViewModel extends ViewModel
   @override
   void config() {
     /// 切换
-    streamEventDataWhere<bool>(TodoDetailAction.changeCompleted)
+    extractEventData(TodoDetailAction.changeCompleted)
         .bindToSubject(isCompleted)
         .disposeBy(disposeBag);
 

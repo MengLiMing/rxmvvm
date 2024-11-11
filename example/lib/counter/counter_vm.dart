@@ -12,15 +12,15 @@ class CounterViewModel extends ViewModel
 
   @override
   void config() {
-    onEventData<int>(CounterEvent.increment, (value) {
-      counter.value += value;
+    onEventData<int>(CounterEvent.increment, (data) {
+      counter.value += data;
     }).disposeBy(disposeBag);
 
-    onEventData<int>(CounterEvent.decrement, (value) {
-      counter.value -= value;
+    onEventData<int>(CounterEvent.decrement, (data) {
+      counter.value -= data;
     }).disposeBy(disposeBag);
 
-    onEvent(CounterEvent.reset, (event) {
+    onEventOnly(CounterEvent.reset, () {
       counter.value = 0;
     }).disposeBy(disposeBag);
   }

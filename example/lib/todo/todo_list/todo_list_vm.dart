@@ -42,14 +42,11 @@ class TodoListViewModel extends ViewModel
     [
       eventActionStream.log(tag: "TodoListAction").emptyListen(),
 
-      onEvent(TodoListAction.add, (action) {
+      onEventOnly(TodoListAction.add, () {
         final date = DateTime.now();
         final newToDo = ToDo(id: date.toString(), title: "时间：$date");
         _todos.value = [..._todos.value, newToDo];
       }),
-
-      /// 新增
-      onEventData<String>(TodoListAction.add, (data) {}),
 
       /// 更新
       onEventData<ToDo>(TodoListAction.update, (data) {

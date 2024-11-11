@@ -64,60 +64,61 @@ mixin DispatchActionMixin<T> on ViewModel {
   }
 
   /// 根据条件过滤事件
-  Stream<EventAction<T>> streamEventWhereBy(bool Function(T event) predicate) {
+  Stream<EventAction<T>> filterEvents(bool Function(T event) predicate) {
     return _eventActionSubject.where(
       (action) => predicate(action.event),
     );
   }
 
-  /// 根据条件过滤事件并获取数据
-  Stream<R> streamEventDataWhereBy<R>(bool Function(T event) predicate) {
-    return streamEventWhereBy(predicate).getEventData<R>();
-  }
-
-  /// 获取指定事件的数据流
-  Stream<R> streamEventDataWhere<R>(T event) {
-    return streamEventDataWhereBy((v) => v == event);
+  /// 获取指定事件的事件流
+  Stream<EventAction<T>> filterEvent(T event) {
+    return filterEvents((v) => v == event);
   }
 
   /// 获取指定事件的事件流
-  Stream<EventAction<T>> streamEventWhere(T event) {
-    return streamEventWhereBy((v) => v == event);
-  }
-
-  /// 监听符合条件的事件
-  StreamSubscription<EventAction<T>> onEventBy(
-    bool Function(T event) predicate,
-    DispatchActionListener<T> onListen,
-  ) {
-    return streamEventWhereBy(predicate).listen(onListen);
+  Stream<R> extractEventData<R>(T event) {
+    return filterEvents((v) => v == event).extractData<R>();
   }
 
   /// 监听指定事件
+  ///
+  /// [event] 需要监听的事件
+  /// [onListen] 事件回调
+  ///
+  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
   StreamSubscription<EventAction<T>> onEvent(
     T event,
     DispatchActionListener<T> onListen,
   ) {
-    return onEventBy((item) => event == item, onListen);
+    return filterEvents((item) => event == item).listen(onListen);
   }
 
-  /// 监听符合条件的事件数据
-  StreamSubscription<R> onEventDataBy<R>(
-    bool Function(T event) predicate,
-    ValueChanged<R> onListen,
+  /// 监听指定事件
+  ///
+  /// [event] 需要监听的事件
+  /// [onListen] 事件回调，不传递参数
+  ///
+  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
+  StreamSubscription<EventAction<T>> onEventOnly(
+    T event,
+    VoidCallback onListen,
   ) {
-    return streamEventDataWhereBy<R>(predicate).listen(onListen);
+    return onEvent(event, (_) => onListen());
   }
 
   /// 监听指定事件的数据
+  ///
+  /// [event] 需要监听的事件
+  /// [onListen] 事件回调，传递该事件的数据
+  ///
+  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
   StreamSubscription<R> onEventData<R>(
     T event,
     ValueChanged<R> onListen,
   ) {
-    return onEventDataBy(
-      (item) => event == item,
-      onListen,
-    );
+    return filterEvents((item) => event == item)
+        .extractData<R>()
+        .listen(onListen);
   }
 
   /// 发送事件
@@ -176,9 +177,7 @@ extension EventActionWrapperExtension<T> on T {
 /// 事件动作流扩展
 extension StreamEventActionExtension<T> on Stream<EventAction<T>> {
   /// 从事件中提取数据
-  Stream<R> getEventData<R>() {
-    return map((event) => event.dataAs<R>())
-        .where((event) => event != null)
-        .cast();
+  Stream<R> extractData<R>() {
+    return where((event) => event.data is R).map((event) => event.data).cast();
   }
 }
