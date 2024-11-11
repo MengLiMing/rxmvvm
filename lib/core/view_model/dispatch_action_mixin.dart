@@ -33,6 +33,9 @@ mixin DispatchActionMixin<T> on ViewModel {
   /// 事件流
   Stream<EventAction<T>> get eventActionStream => _eventActionSubject.stream;
 
+  /// 分发事件
+  StreamSink<EventAction<T>> get eventActionSink => _eventActionSubject.sink;
+
   StreamSubscription<EventAction<T>>? _loggerSubscription;
 
   @override
@@ -119,18 +122,17 @@ mixin DispatchActionMixin<T> on ViewModel {
 
   /// 发送事件
   void dispatch(T event, {dynamic data}) {
+    dispatchEvent(event.asEventwithData(data));
+  }
+
+  void dispatchEvent(EventAction<T> event) {
     if (_eventActionSubject.isClosed) {
       RxLogger.warning('Cannot dispatch event after dispose: $event');
       return;
     }
 
     try {
-      _eventActionSubject.safeAdd(
-        EventAction(
-          event,
-          data: data,
-        ),
-      );
+      _eventActionSubject.safeAdd(event);
     } catch (error, stackTrace) {
       RxLogger.logError(error, stackTrace);
     }
@@ -151,6 +153,24 @@ mixin DispatchActionMixin<T> on ViewModel {
     _eventActionSubject.close();
     super.dispose();
   }
+}
+
+extension EventActionExtension<T> on EventAction<T> {
+  void dispatchBy(DispatchActionMixin<T> viewModel) {
+    viewModel.dispatchEvent(this);
+  }
+
+  VoidCallback dispatcher(DispatchActionMixin<T> viewModel) {
+    return () => dispatchBy(viewModel);
+  }
+}
+
+extension EventActionWrapperExtension<T> on T {
+  EventAction<T> get asEventAction => EventAction(this);
+
+  EventAction<T> asEventwithData(dynamic data) => EventAction(this, data: data);
+
+  EventAction<R> asDataForEvent<R>(R event) => EventAction(event, data: this);
 }
 
 /// 事件动作流扩展

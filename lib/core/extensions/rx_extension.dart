@@ -147,6 +147,32 @@ extension ValueNotifierBindExtension<T> on ValueListenable<T> {
   }
 }
 
+extension ValueBindExtension<T> on T {
+  T bindToSubject(StreamSink<T> sink) {
+    sink.add(this);
+    return this;
+  }
+
+  T bindToNotifier(ValueNotifier<T> notifier) {
+    notifier.value = this;
+    return this;
+  }
+}
+
+extension FutureValueBindExtension<T> on Future<T> {
+  Future<T> bindToSubject(StreamSink<T> sink) async {
+    final result = await this;
+    sink.add(result);
+    return result;
+  }
+
+  Future<T> bindToNotifier(ValueNotifier<T> notifier) async {
+    final result = await this;
+    notifier.value = result;
+    return result;
+  }
+}
+
 extension SubjectExtension<T> on Subject<T> {
   /// 安全地添加数据
   /// 如果 Subject 已关闭，则忽略操作并记录警告
