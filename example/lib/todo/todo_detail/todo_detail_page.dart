@@ -2,8 +2,7 @@ import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rxmvvm_example/todo/todo_detail/todo_detail_vm.dart';
-
-import '../todo_list/todo_list_page.dart';
+import 'package:rxmvvm_example/todo/todo_list/todo_list_page.dart';
 
 class TodoDetailPage extends ViewModelConsumerStatefulWidget {
   final String id;
@@ -48,7 +47,13 @@ class _TodoDetailPageState extends State<TodoDetailPage>
                 return const TodoListPage();
               }));
             },
-            child: const Text('跳转'),
+            child: const Text('跳转新的ToDoList'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            child: const Text('Pop To First'),
           ),
           TextField(
             controller: titleTextController,

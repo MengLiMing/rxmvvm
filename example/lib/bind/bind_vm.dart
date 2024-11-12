@@ -29,7 +29,7 @@ class BindViewModel extends ViewModel
   void config() {
     [
       /// 提交并绑定到提交结果
-      filterEvent(BindAction.commit)
+      eventStreamOf(BindAction.commit)
           .throttleTime(const Duration(milliseconds: 200))
           .withLatestFrom3(name, address, age, (t, a, b, c) => (a, b, c))
           .asyncMap((event) async {

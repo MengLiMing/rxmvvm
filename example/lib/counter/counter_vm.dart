@@ -1,4 +1,5 @@
 import 'package:easy_rxmvvm/easy_rxmvvm.dart';
+import 'package:rxdart/rxdart.dart';
 
 enum CounterEvent {
   increment,
@@ -12,16 +13,21 @@ class CounterViewModel extends ViewModel
 
   @override
   void config() {
-    onEventData<int>(CounterEvent.increment, (data) {
-      counter.value += data;
-    }).disposeBy(disposeBag);
+    /// 几种写法参考
+    /// 如果想控制点击的间隔时间,可以使用throttleTime
+    eventDataStreamOf<int>(CounterEvent.increment)
+        .throttleTime(const Duration(seconds: 1))
+        .withLatestFrom(counter, (t, s) => t + s)
+        .bindToSubject(counter)
+        .disposeBy(disposeBag);
 
     onEventData<int>(CounterEvent.decrement, (data) {
       counter.value -= data;
     }).disposeBy(disposeBag);
 
-    onEventOnly(CounterEvent.reset, () {
-      counter.value = 0;
-    }).disposeBy(disposeBag);
+    eventDataStreamOf(CounterEvent.reset)
+        .map((event) => 0)
+        .bindToSubject(counter)
+        .disposeBy(disposeBag);
   }
 }

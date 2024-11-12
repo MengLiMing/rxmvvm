@@ -117,15 +117,16 @@ class ViewModelFactory<T extends ViewModel> extends BaseViewModelFactory<T> {
 
 /// ViewModelStack 用于管理 ViewModel 的堆栈
 class ViewModelStack<T extends ViewModel> {
-  static final getIt = GetIt.instance;
+  static final _stacks = <String, ViewModelStack>{};
 
   /// 获取或创建 ViewModelStack
   static ViewModelStack getStack(Type type) {
     final name = type.toString();
-    return getIt.registerSingletonIfAbsent<ViewModelStack>(
-      () => ViewModelStack._(),
-      instanceName: name,
-    );
+    if (!_stacks.containsKey(name)) {
+      RxLogger.log('ViewModelStack: Created new stack for $type');
+      _stacks[name] = ViewModelStack._();
+    }
+    return _stacks[name]!;
   }
 
   ViewModelStack._();
@@ -134,34 +135,28 @@ class ViewModelStack<T extends ViewModel> {
 
   /// 将 ViewModel 压入堆栈
   void push(T viewModel) {
+    // 同步执行
     _stack.add(viewModel);
     viewModel.disposeBag.addDisposeCallback(() => remove(viewModel));
     RxLogger.log(
-        "${viewModel.runtimeType}Stack pushed, count: ${_stack.length}");
+        "Stack pushed ${viewModel.runtimeType}, size: ${_stack.length}");
   }
 
   /// 从堆栈中移除 ViewModel
-  void remove(T? viewModel) {
+  void remove(T viewModel) {
+    // 同步执行
     if (_stack.remove(viewModel)) {
       RxLogger.log(
-          "${viewModel.runtimeType}Stack removed, count: ${_stack.length}");
+          "Stack removed ${viewModel.runtimeType}, size: ${_stack.length}");
+
+      if (_stack.isEmpty) {
+        final name = viewModel.runtimeType.toString();
+        _stacks.remove(name);
+        RxLogger.log("${viewModel.runtimeType}Stack removed");
+      }
     }
   }
 
   /// 获取堆栈顶部的 ViewModel
   T? get top => _stack.isEmpty ? null : _stack.last;
-
-  /// 获取堆栈中的 ViewModel 数量
-  int get length => _stack.length;
-
-  /// 清空堆栈
-  void clear() {
-    _stack.clear();
-  }
-
-  /// 检查堆栈是否为空
-  bool get isEmpty => _stack.isEmpty;
-
-  /// 检查堆栈是否不为空
-  bool get isNotEmpty => _stack.isNotEmpty;
 }

@@ -40,8 +40,6 @@ class TodoListViewModel extends ViewModel
   @override
   void config() {
     [
-      eventActionStream.log(tag: "TodoListAction").emptyListen(),
-
       onEventOnly(TodoListAction.add, () {
         final date = DateTime.now();
         final newToDo = ToDo(id: date.toString(), title: "时间：$date");

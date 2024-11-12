@@ -21,18 +21,26 @@ class TodoDetailViewModel extends ViewModel
   @override
   void config() {
     /// 切换
-    extractEventData(TodoDetailAction.changeCompleted)
+    eventDataStreamOf(TodoDetailAction.changeCompleted)
         .bindToSubject(isCompleted)
         .disposeBy(disposeBag);
 
     /// 由TodoListViewModel配置
     configByViewModel<TodoListViewModel>((todoListViewModel) {
-      Rx.combineLatest2(title.distinct(), isCompleted.distinct(), (a, b) {
-        return ToDo(id: id, title: a, isComplete: b);
-      }).listen((event) {
-        todoListViewModel.dispatch(TodoListAction.update, data: event);
-      }).disposeBy(disposeBag);
+      /// 值改变修改
+      Rx.combineLatest2(
+        title.skip(1).distinct(),
+        isCompleted.skip(1).distinct(),
+        (a, b) {
+          return ToDo(id: id, title: a, isComplete: b);
+        },
+      ).listen(
+        (event) {
+          todoListViewModel.dispatch(TodoListAction.update, data: event);
+        },
+      ).disposeBy(disposeBag);
 
+      /// 初始化赋值
       todoListViewModel.checkTodo(id).take(1).listen((event) {
         title.value = event.title;
         isCompleted.value = event.isComplete;

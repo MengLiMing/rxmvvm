@@ -44,10 +44,6 @@ mixin DispatchActionMixin<T> on ViewModel {
     super.beforeConfig();
   }
 
-  /// 事件日志记录器
-  /// [tag] 自定义日志标签
-  /// [level] 日志级别
-  /// [formatter] 自定义日志格式化方法
   StreamSubscription<EventAction<T>> dispatchLogger({
     String? tag,
     String Function(EventAction<T>)? formatter,
@@ -64,41 +60,28 @@ mixin DispatchActionMixin<T> on ViewModel {
   }
 
   /// 根据条件过滤事件
-  Stream<EventAction<T>> filterEvents(bool Function(T event) predicate) {
+  Stream<EventAction<T>> eventStreamWhere(bool Function(T event) predicate) {
     return _eventActionSubject.where(
       (action) => predicate(action.event),
     );
   }
 
   /// 获取指定事件的事件流
-  Stream<EventAction<T>> filterEvent(T event) {
-    return filterEvents((v) => v == event);
+  Stream<EventAction<T>> eventStreamOf(T event) {
+    return eventStreamWhere((v) => v == event);
   }
 
-  /// 获取指定事件的事件流
-  Stream<R> extractEventData<R>(T event) {
-    return filterEvents((v) => v == event).extractData<R>();
+  Stream<R> eventDataStreamOf<R>(T event) {
+    return eventStreamWhere((v) => v == event).extractData<R>();
   }
 
-  /// 监听指定事件
-  ///
-  /// [event] 需要监听的事件
-  /// [onListen] 事件回调
-  ///
-  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
   StreamSubscription<EventAction<T>> onEvent(
     T event,
     DispatchActionListener<T> onListen,
   ) {
-    return filterEvents((item) => event == item).listen(onListen);
+    return eventStreamWhere((item) => event == item).listen(onListen);
   }
 
-  /// 监听指定事件
-  ///
-  /// [event] 需要监听的事件
-  /// [onListen] 事件回调，不传递参数
-  ///
-  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
   StreamSubscription<EventAction<T>> onEventOnly(
     T event,
     VoidCallback onListen,
@@ -106,17 +89,11 @@ mixin DispatchActionMixin<T> on ViewModel {
     return onEvent(event, (_) => onListen());
   }
 
-  /// 监听指定事件的数据
-  ///
-  /// [event] 需要监听的事件
-  /// [onListen] 事件回调，传递该事件的数据
-  ///
-  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
   StreamSubscription<R> onEventData<R>(
     T event,
     ValueChanged<R> onListen,
   ) {
-    return filterEvents((item) => event == item)
+    return eventStreamWhere((item) => event == item)
         .extractData<R>()
         .listen(onListen);
   }

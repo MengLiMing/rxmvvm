@@ -48,7 +48,7 @@ mixin ContextProviderMixin on DisposeMixin {
           onConfig,
           onError: (error, stackTrace) => RxLogger.logError(error, stackTrace),
           onDone: () => RxLogger.log(
-              '$runtimeType: Configuration with ${T.toString()} completed'),
+              '$runtimeType: Retrieved ViewModel of type ${T.toString()}'),
         );
   }
 
