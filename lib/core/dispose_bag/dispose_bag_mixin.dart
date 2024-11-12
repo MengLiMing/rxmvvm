@@ -26,13 +26,8 @@ mixin DisposeBagMixin on DisposeMixin {
       _subscriptionBag.dispose();
 
       for (var handler in _disposeHandlers) {
-        try {
-          handler.dispose();
-        } catch (error, stackTrace) {
-          RxLogger.logError(error, stackTrace);
-        }
+        handler.dispose();
       }
-
       _disposeHandlers.clear();
     } catch (error, stackTrace) {
       RxLogger.logError(error, stackTrace);
