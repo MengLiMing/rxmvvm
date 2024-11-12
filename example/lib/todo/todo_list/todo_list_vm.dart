@@ -39,30 +39,27 @@ class TodoListViewModel extends ViewModel
 
   @override
   void config() {
-    [
-      onEventOnly(TodoListAction.add, () {
-        final date = DateTime.now();
-        final newToDo = ToDo(id: date.toString(), title: "时间：$date");
-        _todos.value = [..._todos.value, newToDo];
-      }),
+    onEventOnly(TodoListAction.add, () {
+      final date = DateTime.now();
+      final newToDo = ToDo(id: date.toString(), title: "时间：$date");
+      _todos.value = [..._todos.value, newToDo];
+    });
 
-      /// 更新
-      onEventData<ToDo>(TodoListAction.update, (data) {
-        /// 查找到id相同的item 然后替换
-        _todos.value =
-            _todos.value.map((e) => e.id == data.id ? data : e).toList();
-      }),
+    /// 更新
+    onEventData<ToDo>(TodoListAction.update, (data) {
+      /// 查找到id相同的item 然后替换
+      _todos.value =
+          _todos.value.map((e) => e.id == data.id ? data : e).toList();
+    });
 
-      /// 删除
-      onEventData<String>(TodoListAction.delete, (id) {
-        _todos.value =
-            _todos.value.where((element) => element.id != id).toList();
-      }),
+    /// 删除
+    onEventData<String>(TodoListAction.delete, (id) {
+      _todos.value = _todos.value.where((element) => element.id != id).toList();
+    });
 
-      /// 更新筛选条件
-      onEventData<TodoFilter>(TodoListAction.changeFilter, (data) {
-        filter.value = data;
-      })
-    ].disposeBy(disposeBag);
+    /// 更新筛选条件
+    onEventData<TodoFilter>(TodoListAction.changeFilter, (data) {
+      filter.value = data;
+    });
   }
 }

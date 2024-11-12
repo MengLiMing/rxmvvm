@@ -23,7 +23,7 @@ class CounterViewModel extends ViewModel
 
     onEventData<int>(CounterEvent.decrement, (data) {
       counter.value -= data;
-    }).disposeBy(disposeBag);
+    });
 
     eventDataStreamOf(CounterEvent.reset)
         .map((event) => 0)

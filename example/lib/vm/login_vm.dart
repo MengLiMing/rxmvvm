@@ -13,10 +13,10 @@ class LoginManagerViewModel extends ViewModel
   void config() {
     onEventOnly(LoginManagerAction.login, () {
       isLogin.value = true;
-    }).disposeBy(disposeBag);
+    });
 
     onEventOnly(LoginManagerAction.logout, () {
       isLogin.value = false;
-    }).disposeBy(disposeBag);
+    });
   }
 }

@@ -27,29 +27,29 @@ class BindViewModel extends ViewModel
 
   @override
   void config() {
-    [
-      /// 提交并绑定到提交结果
-      eventStreamOf(BindAction.commit)
-          .throttleTime(const Duration(milliseconds: 200))
-          .withLatestFrom3(name, address, age, (t, a, b, c) => (a, b, c))
-          .asyncMap((event) async {
-        setLoading(true);
-        await Future.delayed(const Duration(seconds: 3));
-        setLoading(false);
-        return true;
-      }).bindToSubject(commitResult),
+    /// 提交并绑定到提交结果
+    eventStreamOf(BindAction.commit)
+        .throttleTime(const Duration(milliseconds: 200))
+        .withLatestFrom3(name, address, age, (t, a, b, c) => (a, b, c))
+        .asyncMap((event) async {
+          setLoading(true);
+          await Future.delayed(const Duration(seconds: 3));
+          setLoading(false);
+          return true;
+        })
+        .bindToSubject(commitResult)
+        .disposeBy(disposeBag);
 
-      /// 更新年龄
-      onEventData<double>(BindAction.updateAge, (value) {
-        age.value = value;
-      }),
+    /// 更新年龄
+    onEventData<double>(BindAction.updateAge, (value) {
+      age.value = value;
+    });
 
-      /// 重置
-      onEventOnly(BindAction.reset, () {
-        name.value = "";
-        address.value = "";
-        age.value = 0.0;
-      })
-    ].disposeBy(disposeBag);
+    /// 重置
+    onEventOnly(BindAction.reset, () {
+      name.value = "";
+      address.value = "";
+      age.value = 0.0;
+    });
   }
 }

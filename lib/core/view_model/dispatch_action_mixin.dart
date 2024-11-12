@@ -75,27 +75,30 @@ mixin DispatchActionMixin<T> on ViewModel {
     return eventStreamWhere((v) => v == event).extractData<R>();
   }
 
-  StreamSubscription<EventAction<T>> onEvent(
+  void onEvent(
     T event,
     DispatchActionListener<T> onListen,
   ) {
-    return eventStreamWhere((item) => event == item).listen(onListen);
+    eventStreamWhere((item) => event == item)
+        .listen(onListen)
+        .disposeBy(disposeBag);
   }
 
-  StreamSubscription<EventAction<T>> onEventOnly(
+  void onEventOnly(
     T event,
     VoidCallback onListen,
   ) {
-    return onEvent(event, (_) => onListen());
+    onEvent(event, (_) => onListen());
   }
 
-  StreamSubscription<R> onEventData<R>(
+  void onEventData<R>(
     T event,
     ValueChanged<R> onListen,
   ) {
-    return eventStreamWhere((item) => event == item)
+    eventStreamWhere((item) => event == item)
         .extractData<R>()
-        .listen(onListen);
+        .listen(onListen)
+        .disposeBy(disposeBag);
   }
 
   /// 发送事件
