@@ -25,7 +25,7 @@ class CounterViewModel extends ViewModel
       counter.value -= data;
     });
 
-    eventDataStreamOf(CounterEvent.reset)
+    eventStreamOf(CounterEvent.reset)
         .map((event) => 0)
         .bindToSubject(counter)
         .disposeBy(disposeBag);
