@@ -84,25 +84,13 @@ class ViewModelFactory<T extends ViewModel> extends BaseViewModelFactory<T> {
       final viewModel = create();
       cache.addToCache(viewModel);
 
-      try {
-        viewModel.beforeConfig();
-        beforeConfig?.call(viewModel);
-      } catch (error, stackTrace) {
-        RxLogger.logError(error, stackTrace);
-      }
+      viewModel.beforeConfig();
+      beforeConfig?.call(viewModel);
 
-      try {
-        viewModel.config();
-      } catch (error, stackTrace) {
-        RxLogger.logError(error, stackTrace);
-      }
+      viewModel.config();
 
-      try {
-        viewModel.afterConfig();
-        afterConfig?.call(viewModel);
-      } catch (error, stackTrace) {
-        RxLogger.logError(error, stackTrace);
-      }
+      viewModel.afterConfig();
+      afterConfig?.call(viewModel);
 
       return viewModel;
     } catch (error, stackTrace) {
@@ -117,16 +105,15 @@ class ViewModelFactory<T extends ViewModel> extends BaseViewModelFactory<T> {
 
 /// ViewModelStack 用于管理 ViewModel 的堆栈
 class ViewModelStack<T extends ViewModel> {
-  static final _stacks = <String, ViewModelStack>{};
+  static final _stacks = <Type, ViewModelStack>{};
 
   /// 获取或创建 ViewModelStack
   static ViewModelStack getStack(Type type) {
-    final name = type.toString();
-    if (!_stacks.containsKey(name)) {
+    if (!_stacks.containsKey(type)) {
       RxLogger.log('ViewModelStack: Created new stack for $type');
-      _stacks[name] = ViewModelStack._();
+      _stacks[type] = ViewModelStack._();
     }
-    return _stacks[name]!;
+    return _stacks[type]!;
   }
 
   ViewModelStack._();

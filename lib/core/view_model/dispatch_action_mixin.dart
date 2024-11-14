@@ -12,10 +12,8 @@ class EventAction<T> {
 
   /// 安全地获取数据并转换为指定类型
   V? dataAs<V>() {
-    if (data is V) {
-      return data as V;
-    }
-    return null;
+    final data = this.data;
+    return data is V ? data : null;
   }
 
   @override
@@ -112,11 +110,7 @@ mixin DispatchActionMixin<T> on ViewModel {
       return;
     }
 
-    try {
-      _eventActionSubject.safeAdd(event);
-    } catch (error, stackTrace) {
-      RxLogger.logError(error, stackTrace);
-    }
+    _eventActionSubject.safeAdd(event);
   }
 
   /// 创建事件分发回调
