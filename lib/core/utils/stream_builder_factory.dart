@@ -25,11 +25,12 @@ class StreamBuilderFactory {
     BehaviorSubject<T> behaviorSubject, {
     Key? key,
     required StreamConsumerBuilder<T> builder,
+    StreamMiddlewareTransfer<T>? transfer,
     Widget? child,
   }) {
     return build(
       key: key,
-      stream: behaviorSubject.stream,
+      stream: transfer?.call(behaviorSubject) ?? behaviorSubject,
       builder: (context, data, child) =>
           builder(context, data ?? behaviorSubject.value, child),
       initialData: behaviorSubject.value,
