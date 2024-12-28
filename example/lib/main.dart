@@ -1,14 +1,14 @@
 // ignore_for_file: avoid_print
 
 import 'package:easy_rxmvvm/easy_rxmvvm.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:rxmvvm_example/bind/bind_page.dart';
 import 'package:rxmvvm_example/event_bus/event_bus_page.dart';
 import 'package:rxmvvm_example/paging/paging_page.dart';
 import 'package:rxmvvm_example/todo/todo_list/todo_list_page.dart';
 import 'package:rxmvvm_example/vm/login_vm.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'counter/counter_page.dart';
 import 'inherited/inherited_page.dart';

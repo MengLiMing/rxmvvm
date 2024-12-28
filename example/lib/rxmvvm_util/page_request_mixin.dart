@@ -46,6 +46,23 @@ class PageResult<T> {
   );
 }
 
+/// 分页请求控制器
+class PageRequestController<T> with DisposeMixin, PageRequestMixin<T> {
+  final Future<PageResult<T>?> Function(int page) _requestPage;
+
+  PageRequestController({
+    required Future<PageResult<T>?> Function(int page) requestPage,
+    int initialPage = 1,
+  }) : _requestPage = requestPage {
+    this.initialPage = initialPage;
+  }
+
+  @override
+  Future<PageResult<T>?> requestPage(int page) {
+    return _requestPage(page);
+  }
+}
+
 /// 提供统一的分页管理
 mixin PageRequestMixin<T> on DisposeMixin {
   final _pageSubject = 1.rx; // 默认从 1 开始
@@ -69,7 +86,7 @@ mixin PageRequestMixin<T> on DisposeMixin {
 
   /// 是否有更多数据
   bool get hasMoreData =>
-      currentPageState != PageRequestState.refreshCompletedNoMoreData ||
+      currentPageState != PageRequestState.refreshCompletedNoMoreData &&
       currentPageState != PageRequestState.loadCompletedNoMoreData;
 
   /// 设置数据项
