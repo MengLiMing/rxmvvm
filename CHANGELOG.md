@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.6] - 2024-12-28
+
+### Changed
+
+- 优化 buildBehavior 支持 stream 变换
+
 ## [1.1.5] - 2024-11-12
 
 ### Changed
