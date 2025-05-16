@@ -25,6 +25,7 @@ part 'core/event_bus/event_bus_mixin.dart';
 /// extension
 part 'core/extensions/context_extension.dart';
 part 'core/extensions/dispose_extension.dart';
+part 'core/extensions/dispose_handler_extension.dart';
 part 'core/extensions/list_extension.dart';
 part 'core/extensions/observable_extension.dart';
 part 'core/extensions/rx_extension.dart';
