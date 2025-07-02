@@ -14,8 +14,20 @@ mixin DisposeBagProvider {
 mixin DisposeBagMixin on DisposeMixin {
   Type? _ownerType;
 
+  CompositeSubscription? _subscriptionBagInstance;
+
   /// Subscription的dispose统一管理
-  final _subscriptionBag = CompositeSubscription();
+  /// 每次获取时检查是否已经被dispose，如果是则创建新的实例
+  CompositeSubscription get _subscriptionBag {
+    if (_subscriptionBagInstance == null || _isDisposed) {
+      _subscriptionBagInstance = CompositeSubscription();
+      _isDisposed = false;
+    }
+    return _subscriptionBagInstance!;
+  }
+
+  /// 标记是否已经被dispose
+  bool _isDisposed = false;
 
   /// 其他需要dispose的将其方法添加到其中进行统一管理
   final List<DisposeHandler> _disposeHandlers = [];
@@ -23,8 +35,12 @@ mixin DisposeBagMixin on DisposeMixin {
   @override
   void dispose() {
     try {
-      _subscriptionBag.dispose();
-
+      _subscriptionBagInstance?.dispose();
+      _isDisposed = true;
+    } catch (error, stackTrace) {
+      RxLogger.logError(error, stackTrace);
+    }
+    try {
       for (var handler in _disposeHandlers) {
         handler.dispose();
       }
@@ -40,16 +56,24 @@ mixin DisposeBagMixin on DisposeMixin {
     }
   }
 
+  void _addSubscription(StreamSubscription subscription) {
+    if (_subscriptionBag.isDisposed) {
+      addDisposeCallback(subscription.cancel);
+      return;
+    }
+    _subscriptionBag.add(subscription);
+  }
+
   /// 添加订阅到 dispose bag
   StreamSubscription<T> addSubscription<T>(StreamSubscription<T> subscription) {
-    _subscriptionBag.add(subscription);
+    _addSubscription(subscription);
     return subscription;
   }
 
   /// 添加多个订阅到 dispose bag
   void addSubscriptions(List<StreamSubscription> subscriptions) {
     for (var subscription in subscriptions) {
-      _subscriptionBag.add(subscription);
+      _addSubscription(subscription);
     }
   }
 
