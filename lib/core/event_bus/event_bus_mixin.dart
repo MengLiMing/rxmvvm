@@ -13,7 +13,7 @@ mixin EventBusMixin {
     return EventBus().on<T>();
   }
 
-  /// 监听事件 返回的 [StreamSubscription] 需要调用 `dispose` 进行清理。
+  /// 监听事件 返回的 [StreamSubscription] 需要在 `dispose` 时进行清理。
   StreamSubscription<T> onEventBus<T>(void Function(T event) onData) {
     return EventBus().on<T>().listen(onData);
   }

@@ -48,7 +48,7 @@ extension SubjectSyncExtension<T> on Subject<T> {
   /// [notifier] 值通知器
   DisposeHandler syncWithNotifier(ValueNotifier<T> notifier) {
     // 只在 Subject 未关闭时同步初始值
-    if (!isClosed) {
+    if (!isClosed && notifier.value != null) {
       add(notifier.value);
     }
     return syncWith(
@@ -65,7 +65,7 @@ extension SubjectTextElementSyncExtension on Subject<String> {
   /// [controller] 文本编辑控制器
   DisposeHandler syncWithTextController(TextEditingController controller) {
     // 只在 Subject 未关闭时同步初始值
-    if (!isClosed) {
+    if (!isClosed && controller.text.isNotEmpty) {
       add(controller.text);
     }
     return syncWith(
