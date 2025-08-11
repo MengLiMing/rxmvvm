@@ -22,10 +22,8 @@ class EventAction<T> {
   }
 }
 
-typedef DispatchActionListener<T> = void Function(EventAction<T> action);
-
 /// 事件分发 Mixin
-mixin DispatchActionMixin<T> on ViewModel {
+mixin DispatchActionMixin<T> on DisposeMixin, DisposeBagProvider {
   late final _eventActionSubject = PublishSubject<EventAction<T>>();
 
   /// 事件流
@@ -35,13 +33,6 @@ mixin DispatchActionMixin<T> on ViewModel {
   StreamSink<EventAction<T>> get eventActionSink => _eventActionSubject.sink;
 
   StreamSubscription<EventAction<T>>? _loggerSubscription;
-
-  @override
-  void beforeConfig() {
-    dispatchLogger().disposeBy(disposeBag);
-    super.beforeConfig();
-  }
-
   StreamSubscription<EventAction<T>> dispatchLogger({
     String? tag,
     String Function(EventAction<T>)? formatter,
@@ -58,6 +49,7 @@ mixin DispatchActionMixin<T> on ViewModel {
   }
 
   /// 根据条件过滤事件
+  @Deprecated('Use onWhere instead')
   Stream<EventAction<T>> eventStreamWhere(bool Function(T event) predicate) {
     return _eventActionSubject.where(
       (action) => predicate(action.event),
@@ -65,38 +57,32 @@ mixin DispatchActionMixin<T> on ViewModel {
   }
 
   /// 获取指定事件的事件流
+  @Deprecated('Use on instead')
   Stream<EventAction<T>> eventStreamOf(T event) {
     return eventStreamWhere((v) => v == event);
   }
 
+  /// 获取指定事件的数据流
+  @Deprecated('Use onEventData instead')
   Stream<R> eventDataStreamOf<R>(T event) {
     return eventStreamWhere((v) => v == event).extractData<R>();
   }
 
-  void onEvent(
-    T event,
-    DispatchActionListener<T> onListen,
-  ) {
-    eventStreamWhere((item) => event == item)
-        .listen(onListen)
-        .disposeBy(disposeBag);
+  /// 使用onEventData监听指定事件的数据
+  Stream<EventAction<T>> onWhere(bool Function(T event) predicate) {
+    return _eventActionSubject.where(
+      (action) => predicate(action.event),
+    );
   }
 
-  void onEventOnly(
-    T event,
-    VoidCallback onListen,
-  ) {
-    onEvent(event, (_) => onListen());
+  /// 获取指定事件的事件流
+  Stream<EventAction<T>> on(T event) {
+    return onWhere((v) => v == event);
   }
 
-  void onEventData<R>(
-    T event,
-    ValueChanged<R> onListen,
-  ) {
-    eventStreamWhere((item) => event == item)
-        .extractData<R>()
-        .listen(onListen)
-        .disposeBy(disposeBag);
+  /// 获取指定事件的数据流
+  Stream<R> onData<R>(T event) {
+    return onWhere((v) => v == event).extractData<R>();
   }
 
   /// 发送事件
@@ -125,6 +111,7 @@ mixin DispatchActionMixin<T> on ViewModel {
 
   @override
   void dispose() {
+    _loggerSubscription?.cancel();
     _eventActionSubject.close();
     super.dispose();
   }

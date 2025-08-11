@@ -40,26 +40,26 @@ class TodoListViewModel extends ViewModel
   @override
   void config() {
     /// 增
-    onEventOnly(TodoListAction.add, () {
+    on(TodoListAction.add).listen((event) {
       final date = DateTime.now();
       final newToDo = ToDo(id: date.toString(), title: "时间：$date");
       _todos.value = [..._todos.value, newToDo];
-    });
+    }).disposeBy(disposeBag);
 
     /// 删
-    onEventData<String>(TodoListAction.delete, (id) {
+    onData<String>(TodoListAction.delete).listen((id) {
       _todos.value = _todos.value.where((element) => element.id != id).toList();
-    });
+    }).disposeBy(disposeBag);
 
     /// 改
-    onEventData<ToDo>(TodoListAction.update, (data) {
+    onData<ToDo>(TodoListAction.update).listen((data) {
       _todos.value =
           _todos.value.map((e) => e.id == data.id ? data : e).toList();
-    });
+    }).disposeBy(disposeBag);
 
     /// 更新筛选条件
-    onEventData<TodoFilter>(TodoListAction.changeFilter, (data) {
+    onData<TodoFilter>(TodoListAction.changeFilter).listen((data) {
       filter.value = data;
-    });
+    }).disposeBy(disposeBag);
   }
 }

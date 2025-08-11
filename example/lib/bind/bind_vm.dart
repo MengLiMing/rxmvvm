@@ -28,7 +28,7 @@ class BindViewModel extends ViewModel
   @override
   void config() {
     /// 提交并绑定到提交结果
-    eventStreamOf(BindAction.commit)
+    on(BindAction.commit)
         .throttleTime(const Duration(milliseconds: 200))
         .withLatestFrom3(name, address, age, (t, a, b, c) => (a, b, c))
         .asyncMap((event) async {
@@ -41,15 +41,15 @@ class BindViewModel extends ViewModel
         .disposeBy(disposeBag);
 
     /// 更新年龄
-    onEventData<double>(BindAction.updateAge, (value) {
+    onData<double>(BindAction.updateAge).listen((value) {
       age.value = value;
-    });
+    }).disposeBy(disposeBag);
 
     /// 重置
-    onEventOnly(BindAction.reset, () {
+    on(BindAction.reset).listen((event) {
       name.value = "";
       address.value = "";
       age.value = 0.0;
-    });
+    }).disposeBy(disposeBag);
   }
 }
