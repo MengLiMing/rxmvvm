@@ -26,6 +26,9 @@ MIT License
 		"prefix": "rxvmConsumers",
 		"description": "创建支持提供多个viewModel的StatefulWidget",
 		"body": [
+			"import 'package:easy_rxmvvm/easy_rxmvvm.dart';",
+			"import 'package:flutter/material.dart';",
+			"\n",
 			"class $1 extends ViewModelConsumerStatefulWidget {",
 			"\tconst $1({super.key});",
 			"\n",
@@ -48,6 +51,9 @@ MIT License
 		"prefix": "rxvmConsumer",
 		"description": "创建支持提供单个viewModel的StatefulWidget",
 		"body": [
+			"import 'package:easy_rxmvvm/easy_rxmvvm.dart';",
+			"import 'package:flutter/material.dart';",
+			"\n",
 			"class $1 extends ViewModelConsumerStatefulWidget {",
 			"\tconst $1({super.key});",
 			"\n",
@@ -69,6 +75,9 @@ MIT License
 		"prefix": "rxvmConsumerRetrive",
 		"description": "创建只获取单个viewModel的StatefulWidget",
 		"body": [
+			"import 'package:easy_rxmvvm/easy_rxmvvm.dart';",
+			"import 'package:flutter/material.dart';",
+			"\n",
 			"class $1 extends ViewModelConsumerStatefulWidget {",
 			"\tconst $1({super.key});",
 			"\n",
@@ -87,6 +96,8 @@ MIT License
 		"prefix": "rxvmViewModel",
 		"description": "创建一个 ViewModel",
 		"body": [
+			"import 'package:easy_rxmvvm/easy_rxmvvm.dart';",
+			"\n",
 			"class $1ViewModel extends ViewModel {",
 			"\t@override",
 			"\tvoid config() {",
