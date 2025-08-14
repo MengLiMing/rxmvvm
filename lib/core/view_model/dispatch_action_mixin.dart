@@ -161,6 +161,6 @@ extension EventActionWrapperExtension<T> on T {
 extension StreamEventActionExtension<T> on Stream<EventAction<T>> {
   /// 从事件中提取数据
   Stream<R> extractData<R>() {
-    return where((event) => event.data is R).map((event) => event.data).cast();
+    return where((event) => event.data is R).map((event) => event.data as R);
   }
 }

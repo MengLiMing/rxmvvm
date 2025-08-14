@@ -1,6 +1,6 @@
 part of easy_rxmvvm;
 
-typedef StreamMiddlewareTransfer<T> = Stream<T> Function(Stream<T>);
+typedef StreamMiddlewareTransfer<T> = Stream<T> Function(Stream<T> stream);
 
 /// rx一些便捷操作扩展
 extension StreamBindExtension<T> on Stream<T> {
