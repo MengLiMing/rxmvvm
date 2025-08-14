@@ -48,26 +48,6 @@ mixin DispatchActionMixin<T> on DisposeMixin, DisposeBagProvider {
     return _loggerSubscription!;
   }
 
-  /// 根据条件过滤事件
-  @Deprecated('Use onWhere instead')
-  Stream<EventAction<T>> eventStreamWhere(bool Function(T event) predicate) {
-    return _eventActionSubject.where(
-      (action) => predicate(action.event),
-    );
-  }
-
-  /// 获取指定事件的事件流
-  @Deprecated('Use on instead')
-  Stream<EventAction<T>> eventStreamOf(T event) {
-    return eventStreamWhere((v) => v == event);
-  }
-
-  /// 获取指定事件的数据流
-  @Deprecated('Use onEventData instead')
-  Stream<R> eventDataStreamOf<R>(T event) {
-    return eventStreamWhere((v) => v == event).extractData<R>();
-  }
-
   /// 使用onEventData监听指定事件的数据
   Stream<EventAction<T>> onWhere(bool Function(T event) predicate) {
     return _eventActionSubject.where(
@@ -83,6 +63,48 @@ mixin DispatchActionMixin<T> on DisposeMixin, DisposeBagProvider {
   /// 获取指定事件的数据流
   Stream<R> onData<R>(T event) {
     return onWhere((v) => v == event).extractData<R>();
+  }
+
+  /// 监听指定事件
+  StreamSubscription<EventAction<T>> onListen(
+    T event,
+    void Function(EventAction<T>) listen, {
+    StreamMiddlewareTransfer<EventAction<T>>? transformer,
+    void Function()? onDone,
+    void Function(Object, StackTrace)? onError,
+    bool? cancelOnError,
+    DisposeBag? disposeBag,
+  }) {
+    return on(event)
+        .applyMiddleware(transformer)
+        .listen(
+          listen,
+          onDone: onDone,
+          onError: onError,
+          cancelOnError: cancelOnError,
+        )
+        .disposeBy(disposeBag ?? this.disposeBag);
+  }
+
+  /// 监听指定事件的数据
+  StreamSubscription<R> onDataListen<R>(
+    T event,
+    void Function(R data) listen, {
+    StreamMiddlewareTransfer<R>? transformer,
+    void Function()? onDone,
+    void Function(Object, StackTrace)? onError,
+    bool? cancelOnError,
+    DisposeBag? disposeBag,
+  }) {
+    return onData<R>(event)
+        .applyMiddleware(transformer)
+        .listen(
+          listen,
+          onDone: onDone,
+          onError: onError,
+          cancelOnError: cancelOnError,
+        )
+        .disposeBy(disposeBag ?? this.disposeBag);
   }
 
   /// 发送事件

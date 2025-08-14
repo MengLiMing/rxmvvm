@@ -4,11 +4,6 @@ typedef StreamMiddlewareTransfer<T> = Stream<T> Function(Stream<T>);
 
 /// rx一些便捷操作扩展
 extension StreamBindExtension<T> on Stream<T> {
-  /// 使用中间件对当前 Stream 进行处理
-  ///
-  /// [middleware] 需要应用的中间件，中间件是一个函数，函数的参数是当前 Stream，返回值是处理后的 Stream
-  ///
-  /// return 处理后的 Stream
   Stream<T> applyMiddleware(StreamMiddlewareTransfer<T>? middleware) {
     return middleware == null ? this : middleware(this);
   }

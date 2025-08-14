@@ -28,7 +28,10 @@ mixin ContextProviderMixin on DisposeMixin {
 
     return contextStream.asyncMap((context) async {
       try {
-        return context.getViewModel<T>(inheritedListen: listen);
+        if (context.mounted) {
+          return context.getViewModel<T>(inheritedListen: listen);
+        }
+        return null;
       } catch (error, stackTrace) {
         RxLogger.logError(error, stackTrace);
         return null;
