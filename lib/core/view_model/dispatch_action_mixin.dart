@@ -157,10 +157,61 @@ extension EventActionWrapperExtension<T> on T {
   EventAction<R> asDataForEvent<R>(R event) => EventAction(event, data: this);
 }
 
+typedef DispatchActionListener<T> = void Function(EventAction<T> action);
+
 /// 事件动作流扩展
 extension StreamEventActionExtension<T> on Stream<EventAction<T>> {
   /// 从事件中提取数据
   Stream<R> extractData<R>() {
     return where((event) => event.data is R).map((event) => event.data as R);
+  }
+}
+
+extension DeprecatedDispatchMxinExtension<T> on DispatchActionMixin<T> {
+  @Deprecated('Use onWhere instead')
+  Stream<EventAction<T>> eventStreamWhere(bool Function(T event) predicate) {
+    return _eventActionSubject.where(
+      (action) => predicate(action.event),
+    );
+  }
+
+  /// 获取指定事件的事件流
+  @Deprecated('Use on instead')
+  Stream<EventAction<T>> eventStreamOf(T event) {
+    return eventStreamWhere((v) => v == event);
+  }
+
+  @Deprecated('Use onData instead')
+  Stream<R> eventDataStreamOf<R>(T event) {
+    return eventStreamWhere((v) => v == event).extractData<R>();
+  }
+
+  @Deprecated('Use onListen instead')
+  void onEvent(
+    T event,
+    DispatchActionListener<T> onListen,
+  ) {
+    eventStreamWhere((item) => event == item)
+        .listen(onListen)
+        .disposeBy(disposeBag);
+  }
+
+  @Deprecated('Use onListen instead')
+  void onEventOnly(
+    T event,
+    VoidCallback onListen,
+  ) {
+    onEvent(event, (_) => onListen());
+  }
+
+  @Deprecated('Use onDataListen instead')
+  void onEventData<R>(
+    T event,
+    ValueChanged<R> onListen,
+  ) {
+    eventStreamWhere((item) => event == item)
+        .extractData<R>()
+        .listen(onListen)
+        .disposeBy(disposeBag);
   }
 }
