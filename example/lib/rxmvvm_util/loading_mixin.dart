@@ -16,10 +16,12 @@ mixin LoadingMixin<T> on DisposeMixin {
   StreamSubscription<T> onLoadingState(
     ValueChanged<T> onListen, {
     required T initialValue,
-    StreamMiddlewareTransfer<T>? transformer,
+    StreamTransformer<T, T>? transformer,
   }) {
-    return _loadingSubject
-        .applyMiddleware(transformer)
+    final stream = transformer == null
+        ? _loadingSubject
+        : _loadingSubject.transform(transformer);
+    return stream
         .doOnCancel(() => onListen(initialValue))
         .listen(onListen);
   }
@@ -42,6 +44,8 @@ extension BoolLoadingExtension on LoadingMixin<bool> {
     required bool initialValue,
   }) {
     return onLoadingState(onListen,
-        initialValue: initialValue, transformer: (p0) => p0.distinct().take(2));
+        initialValue: initialValue,
+        transformer: StreamTransformer<bool, bool>.fromBind(
+            (s) => s.distinct().take(2)));
   }
 }

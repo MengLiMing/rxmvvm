@@ -1,13 +1,7 @@
 part of easy_rxmvvm;
 
-typedef StreamMiddlewareTransfer<T> = Stream<T> Function(Stream<T>);
-
 /// rx一些便捷操作扩展
 extension StreamBindExtension<T> on Stream<T> {
-  Stream<T> applyMiddleware(StreamMiddlewareTransfer<T>? middleware) {
-    return middleware == null ? this : middleware(this);
-  }
-
   /// 不关心数据返回一个StreamSubscription
   StreamSubscription<T> emptyListen() {
     return listen((_) {});
@@ -180,6 +174,18 @@ extension SubjectExtension<T> on Subject<T> {
       }
     } catch (error, stackTrace) {
       RxLogger.logError(error, stackTrace);
+    }
+  }
+}
+
+/// 行为主题的条件设置扩展
+extension BehaviorSubjectSetIfChanged<T> on BehaviorSubject<T> {
+  /// 仅在值变化时更新，避免无效重建
+  void setIfChanged(T next, {bool Function(T a, T b)? equals}) {
+    final eq = equals ?? (T a, T b) => a == b;
+    final prev = hasValue ? value : null;
+    if (!hasValue || !eq(prev as T, next)) {
+      safeAdd(next);
     }
   }
 }

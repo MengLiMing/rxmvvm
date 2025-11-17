@@ -131,14 +131,12 @@ class ViewModelStack<T extends ViewModel> {
 
   /// 从堆栈中移除 ViewModel
   void remove(T viewModel) {
-    // 同步执行
     if (_stack.remove(viewModel)) {
       RxLogger.log(
           "Stack removed ${viewModel.runtimeType}, size: ${_stack.length}");
 
       if (_stack.isEmpty) {
-        final name = viewModel.runtimeType.toString();
-        _stacks.remove(name);
+        _stacks.remove(viewModel.runtimeType);
         RxLogger.log("${viewModel.runtimeType}Stack removed");
       }
     }

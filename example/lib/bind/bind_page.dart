@@ -14,8 +14,7 @@ class _BindPageState extends State<BindPage>
     with
         DisposeBagProvider,
         ViewModelConsumerStateMixin<BindPage>,
-        SingleViewModelMixin<BindViewModel, BindPage>,
-        EventBusMixin {
+        SingleViewModelMixin<BindViewModel, BindPage> {
   final nameController = TextEditingController();
   final addressController = TextEditingController();
 

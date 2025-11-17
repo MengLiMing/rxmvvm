@@ -11,7 +11,7 @@ enum BindAction {
 }
 
 class BindViewModel extends ViewModel
-    with DispatchActionMixin<BindAction>, LoadingMixin<bool>, EventBusMixin {
+    with DispatchActionMixin<BindAction>, LoadingMixin<bool> {
   final name = "".rx;
 
   final address = "".rx;

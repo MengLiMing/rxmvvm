@@ -18,10 +18,6 @@ part 'core/consumer/view_model_state_mixin.dart';
 part 'core/dispose_bag/dispose_bag_mixin.dart';
 part 'core/dispose_bag/dispose_mixin.dart';
 
-/// event_bus
-part 'core/event_bus/event_bus.dart';
-part 'core/event_bus/event_bus_mixin.dart';
-
 /// extension
 part 'core/extensions/context_extension.dart';
 part 'core/extensions/dispose_extension.dart';
@@ -36,6 +32,9 @@ part 'core/logger/logger.dart';
 
 /// provider
 part 'core/provider/view_model_provider.dart';
+
+/// event_bus
+part 'core/utils/event_bus.dart';
 
 /// utils
 part 'core/utils/stream_builder_factory.dart';

@@ -9,8 +9,7 @@ class EventBusPage extends StatefulWidget {
   State<EventBusPage> createState() => _EventBusPageState();
 }
 
-class _EventBusPageState extends State<EventBusPage>
-    with EventBusMixin, DisposeBagProvider {
+class _EventBusPageState extends State<EventBusPage> with DisposeBagProvider {
   @override
   void dispose() {
     disposeBag.dispose();
@@ -29,13 +28,14 @@ class _EventBusPageState extends State<EventBusPage>
           body: Center(
             child: Column(
               children: [
-                StreamBuilderFactory.build(
-                  stream: eventBusStream(),
-                  builder: (context, data, _) {
-                    if (data == null) {
+                StreamBuilderFactory.build<EventAction<DemoEvent>>(
+                  stream: EventBus.onEventStream<DemoEvent>(),
+                  builder: (context, action, _) {
+                    if (action == null) {
                       return const Text("暂未收到event");
                     }
-                    return Text("收到event:$data");
+                    return Text(
+                        "收到event: ${action.event}, data: ${action.data}");
                   },
                 ),
                 StreamBuilderFactory.buildBehavior(
@@ -55,40 +55,45 @@ class _EventBusPageState extends State<EventBusPage>
   }
 }
 
-class EventBusDemo extends ViewModel with EventBusMixin {
+class EventBusDemo extends ViewModel {
   final counter = 0.rx;
   @override
   void config() {
-    onEventBus<int>((event) {
+    EventBus.onDataListen<DemoEvent, int>(DemoEvent.number, (value) {
       counter.value += 1;
     }).disposeBy(disposeBag);
   }
 }
 
-class EventBusDemo1Widget extends StatelessWidget with EventBusMixin {
+class EventBusDemo1Widget extends StatelessWidget {
   const EventBusDemo1Widget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        emitEvent("aaaa");
+        EventBus.dispatch(DemoEvent.aaaa, data: "aaaa");
       },
       child: const Text('发送aaaa'),
     );
   }
 }
 
-class EventBusDemo2Widget extends StatelessWidget with EventBusMixin {
+class EventBusDemo2Widget extends StatelessWidget {
   const EventBusDemo2Widget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        emitEvent(1111);
+        EventBus.dispatch(DemoEvent.number, data: 1111);
       },
       child: const Text('发送1111'),
     );
   }
+}
+
+enum DemoEvent {
+  aaaa,
+  number,
 }
