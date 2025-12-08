@@ -18,6 +18,7 @@ mixin DisposeBagMixin on DisposeMixin {
 
   /// Subscription的dispose统一管理
   /// 每次获取时检查是否已经被dispose，如果是则创建新的实例
+  /// 这种机制允许对象在 dispose 后被重新使用（虽然不推荐，但提供了兜底保护）
   CompositeSubscription get _subscriptionBag {
     if (_subscriptionBagInstance == null || _isDisposed) {
       _subscriptionBagInstance = CompositeSubscription();

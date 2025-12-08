@@ -100,7 +100,7 @@ class ViewModelFactory<T extends ViewModel> extends BaseViewModelFactory<T> {
   }
 
   @override
-  List<Object?> get props => [T.runtimeType, shareStrategy];
+  List<Object?> get props => [T.runtimeType, shareStrategy, create];
 }
 
 /// ViewModelStack 用于管理 ViewModel 的堆栈

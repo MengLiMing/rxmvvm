@@ -5,7 +5,11 @@ extension ListenableExtension on Listenable {
     addListener(listener);
 
     return () {
-      removeListener(listener);
+      try {
+        removeListener(listener);
+      } catch (error, stackTrace) {
+        RxLogger.logError(error, stackTrace);
+      }
     };
   }
 }
@@ -16,7 +20,11 @@ extension AnimationLocalStatusListenersMixinExtension
       AnimationStatusListener listener) {
     addStatusListener(listener);
     return () {
-      removeStatusListener(listener);
+      try {
+        removeStatusListener(listener);
+      } catch (error, stackTrace) {
+        RxLogger.logError(error, stackTrace);
+      }
     };
   }
 }

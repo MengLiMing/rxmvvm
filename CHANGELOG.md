@@ -1,12 +1,17 @@
 # Changelog
 
+## [1.6.0] - 2025-12-06
+
+### Added
+
+- 新增 `StreamOb` 组件，统一 `use(stream, {initial})` 的依赖收集与读取
+- 新增 `ValueStreamOb` 轻量包装，面向 `ValueStream<T>`（如 BehaviorSubject、ReplaySubject）
+
 ## [1.5.0] - 2025-11-17
 
 ### Changed
 
 - 优化 StreamBuilderFactory 使用体验，支持简洁 `transfer` 绑定
-
-## [1.3.3] - 2025-11-15
 
 ## [1.3.1] - 2025-01-03
 

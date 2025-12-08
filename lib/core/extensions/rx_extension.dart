@@ -29,12 +29,6 @@ extension StreamBindExtension<T> on Stream<T> {
     });
   }
 
-  /// Bind the current Stream to a StreamSink
-  ///
-  /// [sink] 需要绑定的 StreamSink
-  ///
-  /// return 一个 StreamSubscription，需要在生命周期结束时调用 `dispose` 进行清理
-
   /// 回顾历史元素
   ///
   /// count: 回复历史元素的个数
@@ -136,18 +130,6 @@ extension ValueNotifierBindExtension<T> on ValueListenable<T> {
   }
 }
 
-extension ValueBindExtension<T> on T {
-  T bindToSubject(StreamSink<T> sink) {
-    sink.add(this);
-    return this;
-  }
-
-  T bindToNotifier(ValueNotifier<T> notifier) {
-    notifier.value = this;
-    return this;
-  }
-}
-
 extension FutureValueBindExtension<T> on Future<T> {
   Future<T> bindToSubject(StreamSink<T> sink) async {
     final result = await this;
@@ -166,19 +148,19 @@ extension SubjectExtension<T> on Subject<T> {
   /// 安全地添加数据
   /// 如果 Subject 已关闭，则忽略操作并记录警告
   void safeAdd(T value) {
+    if (isClosed) {
+      RxLogger.warning('Attempt to add value to closed Subject');
+      return;
+    }
+
     try {
-      if (!isClosed) {
-        add(value);
-      } else {
-        RxLogger.warning('Attempt to add value to closed Subject');
-      }
+      add(value);
     } catch (error, stackTrace) {
       RxLogger.logError(error, stackTrace);
     }
   }
 }
 
-/// 行为主题的条件设置扩展
 extension BehaviorSubjectSetIfChanged<T> on BehaviorSubject<T> {
   /// 仅在值变化时更新，避免无效重建
   void setIfChanged(T next, {bool Function(T a, T b)? equals}) {

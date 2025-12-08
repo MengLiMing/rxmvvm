@@ -12,6 +12,7 @@ import 'package:rxdart/rxdart.dart';
 part 'core/consumer/view_model_consumer_widget.dart';
 part 'core/consumer/view_model_retriever_mixin.dart';
 part 'core/consumer/view_model_single_mixin.dart';
+part 'core/consumer/view_model_state.dart';
 part 'core/consumer/view_model_state_mixin.dart';
 
 /// dispose_bag
@@ -33,11 +34,10 @@ part 'core/logger/logger.dart';
 /// provider
 part 'core/provider/view_model_provider.dart';
 
-/// event_bus
-part 'core/utils/event_bus.dart';
-
 /// utils
+part 'core/utils/event_bus.dart';
 part 'core/utils/stream_builder_factory.dart';
+part 'core/utils/stream_ob.dart';
 
 /// view_model
 part 'core/view_model/context_provider_mixin.dart';

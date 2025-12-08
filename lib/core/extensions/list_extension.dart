@@ -4,12 +4,10 @@ part of easy_rxmvvm;
 extension ListExtension<T> on List<T> {
   /// 获取指定索引的元素，如果索引越界则返回 null
   T? getOrNull(int index) {
-    try {
-      return index >= 0 && index < length ? this[index] : null;
-    } catch (error, stackTrace) {
-      RxLogger.logError(error, stackTrace);
-      return null;
+    if (index >= 0 && index < length) {
+      return this[index];
     }
+    return null;
   }
 
   /// 安全地获取指定索引的元素
@@ -39,19 +37,12 @@ extension ListExtension<T> on List<T> {
     return true;
   }
 
-  /// 获取列表的第一个元素，如果列表为空则返回 null
-  T? get firstOrNull {
-    return isEmpty ? null : first;
-  }
-
-  /// 获取列表的最后一个元素，如果列表为空则返回 null
-  T? get lastOrNull {
-    return isEmpty ? null : last;
-  }
-
   /// 安全地添加元素
-  /// 如果添加失败则记录错误
   void safeAdd(T element) {
+    // 对于固定长度列表，add 会抛出异常。
+    // 但通常我们不建议在扩展方法中捕获此类编程错误。
+    // 如果列表是不可修改的，调用者应该自己知道。
+    // 这里保留 try-catch 主要是为了防止不可变列表抛出异常。
     try {
       add(element);
     } catch (error, stackTrace) {
@@ -60,7 +51,6 @@ extension ListExtension<T> on List<T> {
   }
 
   /// 安全地移除元素
-  /// 如果移除失败则记录错误
   bool safeRemove(T element) {
     try {
       return remove(element);
