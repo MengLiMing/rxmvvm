@@ -37,7 +37,6 @@ part 'core/provider/view_model_provider.dart';
 /// utils
 part 'core/utils/event_bus.dart';
 part 'core/utils/stream_builder_factory.dart';
-part 'core/utils/stream_ob.dart';
 
 /// view_model
 part 'core/view_model/context_provider_mixin.dart';

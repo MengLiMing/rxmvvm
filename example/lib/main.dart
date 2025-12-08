@@ -12,7 +12,6 @@ import 'package:rxmvvm_example/vm/login_vm.dart';
 
 import 'counter/counter_page.dart';
 import 'inherited/inherited_page.dart';
-import 'ob/stream_ob_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +32,6 @@ class _MyAppState extends State<MyApp> {
         DemoItem("分页请求", (context) => const PagingPage()),
         DemoItem("EventBus", (context) => const EventBusPage()),
         DemoItem("TodoList", (context) => const TodoListPage()),
-        DemoItem("StreamOb", (context) => const StreamObPage()),
       ];
 
   @override
