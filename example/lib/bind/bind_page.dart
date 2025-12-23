@@ -41,6 +41,7 @@ class _BindPageState extends ViewModelState<BindPage, BindViewModel> {
   /// 测试刷新次数
   var ageRefreshCount = 0;
   var stateRefreshCount = 0;
+  var mulRefreshCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,14 @@ class _BindPageState extends ViewModelState<BindPage, BindViewModel> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
+            StreamOb(builder: (context, watcher, _) {
+              // 监听多个流
+              viewModel.stateStream.watchBy(watcher);
+              viewModel.ageStream.watchBy(watcher);
+              viewModel.isCommitEnable.watchBy(watcher);
+              mulRefreshCount++;
+              return Text('刷新次数：$mulRefreshCount');
+            }),
             StreamOb(builder: (context, watcher, _) {
               final _ = viewModel.stateStream.watchBy(watcher);
               stateRefreshCount++;
