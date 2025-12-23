@@ -4,6 +4,7 @@ import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:rxmvvm_example/bind/bind_page.dart';
 import 'package:rxmvvm_example/event_bus/event_bus_page.dart';
 import 'package:rxmvvm_example/paging/paging_page.dart';
@@ -28,11 +29,13 @@ class _MyAppState extends State<MyApp> {
   get demoList => [
         DemoItem("共享", (context) => const InheritedPage()),
         DemoItem("计数器", (context) => const CounterPage()),
-        DemoItem("双向绑定", (context) => const BindPage()),
+        DemoItem("双向绑定 & StreamOb", (context) => const BindPage()),
         DemoItem("分页请求", (context) => const PagingPage()),
         DemoItem("EventBus", (context) => const EventBusPage()),
         DemoItem("TodoList", (context) => const TodoListPage()),
       ];
+
+  final a = PublishSubject<int>();
 
   @override
   Widget build(BuildContext context) {

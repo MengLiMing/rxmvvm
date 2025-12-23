@@ -57,16 +57,14 @@ class _TodoListPageState extends State<TodoListPage>
                         ),
                       ),
                       onDismissed: (_) {
-                        viewModel.dispatch(TodoListAction.delete,
-                            data: item.id);
+                        viewModel.delete(item.id);
                       },
                       child: ListTile(
                         title: Text(item.title),
                         trailing: CupertinoSwitch(
                             value: item.isComplete,
-                            onChanged: (value) => viewModel.dispatch(
-                                TodoListAction.update,
-                                data: item.copyWith(isComplete: value))),
+                            onChanged: (value) => viewModel
+                                .update(item.copyWith(isComplete: value))),
                         onTap: () {
                           Navigator.of(context)
                               .push(CupertinoPageRoute(builder: (context) {
@@ -84,27 +82,27 @@ class _TodoListPageState extends State<TodoListPage>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => viewModel.dispatch(TodoListAction.add),
+        onPressed: viewModel.add,
         child: const Icon(Icons.add),
       ),
     );
   }
 
   Widget filterWidget() {
-    return StreamBuilderFactory.buildBehavior(viewModel.filter,
+    return StreamBuilderFactory.build(
+        stream: viewModel.filter,
         builder: (context, value, _) {
-      return DropdownButton<TodoFilter>(
-        value: value,
-        items: TodoFilter.values.map((TodoFilter filter) {
-          return DropdownMenuItem<TodoFilter>(
-            value: filter,
-            child: Text(filterToString(filter)),
+          return DropdownButton<TodoFilter>(
+            value: value!,
+            items: TodoFilter.values.map((TodoFilter filter) {
+              return DropdownMenuItem<TodoFilter>(
+                value: filter,
+                child: Text(filterToString(filter)),
+              );
+            }).toList(),
+            onChanged: (filter) => viewModel.changeFilter(filter),
           );
-        }).toList(),
-        onChanged: (filter) =>
-            viewModel.dispatch(TodoListAction.changeFilter, data: filter),
-      );
-    });
+        });
   }
 
   String filterToString(TodoFilter filter) {

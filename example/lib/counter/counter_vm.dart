@@ -31,3 +31,14 @@ class CounterViewModel extends ViewModel
         .disposeBy(disposeBag);
   }
 }
+
+extension CounterViewModelInput on CounterViewModel {
+  /// 增加
+  void increment(int value) => dispatch(CounterEvent.increment, data: value);
+
+  /// 减少
+  void decrement(int value) => dispatch(CounterEvent.decrement, data: value);
+
+  /// 重置
+  void reset() => dispatch(CounterEvent.reset);
+}

@@ -29,3 +29,6 @@ migrate_working_dir/
 .packages
 build/
 android/local.properties
+
+# FVM Version Cache
+.fvm/

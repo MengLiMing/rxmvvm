@@ -1,4 +1,6 @@
-class ToDo {
+import 'package:equatable/equatable.dart';
+
+class ToDo extends Equatable {
   final String id;
   final String title;
   final bool isComplete;
@@ -23,4 +25,7 @@ class ToDo {
 
   @override
   String toString() => 'ToDo(id: $id, title: $title, isComplete: $isComplete)';
+
+  @override
+  List<Object?> get props => [id, title, isComplete];
 }

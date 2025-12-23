@@ -29,27 +29,23 @@ class CounterPage extends StatelessWidget {
                   },
                 ),
                 TextButton(
-                  onPressed:
-                      viewModel.dispatcher(CounterEvent.increment, data: 1),
+                  onPressed: () => viewModel.increment(1),
                   child: const Text('+'),
                 ),
                 TextButton(
-                  onPressed:
-                      viewModel.dispatcher(CounterEvent.increment, data: 10),
+                  onPressed: () => viewModel.increment(10),
                   child: const Text('+10'),
                 ),
                 TextButton(
-                  onPressed:
-                      viewModel.dispatcher(CounterEvent.decrement, data: 1),
+                  onPressed: () => viewModel.decrement(1),
                   child: const Text('-'),
                 ),
                 TextButton(
-                  onPressed:
-                      viewModel.dispatcher(CounterEvent.decrement, data: 10),
+                  onPressed: () => viewModel.decrement(10),
                   child: const Text('-10'),
                 ),
                 TextButton(
-                  onPressed: viewModel.dispatcher(CounterEvent.reset),
+                  onPressed: viewModel.reset,
                   child: const Text('重置'),
                 ),
               ]),

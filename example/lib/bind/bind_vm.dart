@@ -1,5 +1,6 @@
 import 'package:easy_rxmvvm/easy_rxmvvm.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:rxmvvm_example/bind/bind_state.dart';
 import 'package:rxmvvm_example/rxmvvm_util/loading_mixin.dart';
 
 enum BindAction {
@@ -11,45 +12,70 @@ enum BindAction {
 }
 
 class BindViewModel extends ViewModel
-    with DispatchActionMixin<BindAction>, LoadingMixin<bool> {
-  final name = "".rx;
+    with
+        StateMixin<BindState>,
+        DispatchActionMixin<BindAction>,
+        LoadingMixin<bool> {
+  @override
+  BindState get initialState => const BindState(age: 18);
 
-  final address = "".rx;
+  final _commitResult = PublishSubject<bool>();
 
-  final age = 0.0.rx;
+  Stream<bool> get commitResult => _commitResult.stream;
 
-  /// 请求结果
-  final commitResult = PublishSubject<bool>();
+  late final isCommitEnable = stateStream
+      .map((event) => event.isComplete)
+      .shareValueSeeded(state.isComplete);
 
-  /// 是否可以点击
-  Stream<bool> get isCommitEnable => Rx.combineLatest3(
-      name, address, age, (a, b, c) => a.isNotEmpty && b.isNotEmpty && c >= 18);
+  // late final ageStream =
+  //     stateStream.map((event) => event.age).shareValueSeeded(0);
+  late final ageStream =
+      stateStream.map((event) => event.age).shareValueSeeded(state.age);
 
   @override
   void config() {
-    /// 提交并绑定到提交结果
     on(BindAction.commit)
-        .throttleTime(const Duration(milliseconds: 200))
-        .withLatestFrom3(name, address, age, (t, a, b, c) => (a, b, c))
-        .asyncMap((event) async {
+        .throttleTime(const Duration(milliseconds: 500)) // 防抖/节流
+        .withLatestFrom(stateStream, (_, s) => s)
+        .asyncMap((state) async {
           setLoading(true);
+          // 模拟请求
           await Future.delayed(const Duration(seconds: 3));
           setLoading(false);
           return true;
         })
-        .bindToSubject(commitResult)
+        .bindToSubject(_commitResult) // 结果发送到结果流
         .disposeBy(disposeBag);
 
     /// 更新年龄
-    onData<double>(BindAction.updateAge).listen((value) {
-      age.value = value;
-    }).disposeBy(disposeBag);
+    onData<double>(BindAction.updateAge)
+        .listen((event) => updateState((prev) => prev.copyWith(age: event)))
+        .disposeBy(disposeBag);
 
-    /// 重置
-    on(BindAction.reset).listen((event) {
-      name.value = "";
-      address.value = "";
-      age.value = 0.0;
-    }).disposeBy(disposeBag);
+    /// 重置数据
+    on(BindAction.reset)
+        .map((event) => initialState)
+        .bindToSubject(stateSink)
+        .disposeBy(disposeBag);
   }
+}
+
+extension BindViewModelInput on BindViewModel {
+  /// 提交
+  void commit() {
+    print("contextcontextcontextcontextcontextcontextcontext${context}");
+    dispatch(BindAction.commit);
+  }
+
+  /// 更新年龄
+  void updateAge(double value) => dispatch(BindAction.updateAge, data: value);
+
+  /// 重置
+  void reset() => dispatch(BindAction.reset);
+
+  void updateName(String value) =>
+      updateState((prev) => prev.copyWith(name: value));
+
+  void updateAddress(String value) =>
+      updateState((prev) => prev.copyWith(address: value));
 }

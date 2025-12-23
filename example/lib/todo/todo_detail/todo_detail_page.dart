@@ -63,10 +63,7 @@ class _TodoDetailPageState extends State<TodoDetailPage>
             builder: (context, value, _) {
               return CupertinoSwitch(
                 value: value,
-                onChanged: (value) => viewModel.dispatch(
-                  TodoDetailAction.changeCompleted,
-                  data: value,
-                ),
+                onChanged: viewModel.changeCompleted,
               );
             },
           ),

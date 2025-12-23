@@ -5,7 +5,9 @@ typedef StreamConsumerBuilder<T> = Widget Function(
 
 typedef StreamOperator<T> = Stream<T> Function(Stream<T>);
 
-/// 提供一组基于 RxDart 的 Stream/BehaviorSubject 组合与渲染工厂
+/// 不关心AsyncSnapshot状态，只关注数据变化
+///
+/// 建议在 ViewModel 中处理流转换，不在 UI 层处理
 class StreamBuilderFactory {
   StreamBuilderFactory._();
 
@@ -26,6 +28,9 @@ class StreamBuilderFactory {
     );
   }
 
+  /// 构建基于 BehaviorSubject 的 StreamBuilder
+  ///
+  /// 为了使用便捷，请确保 BehaviorSubject 有初始值
   static Widget buildBehavior<T>(
     BehaviorSubject<T> behaviorSubject, {
     Key? key,

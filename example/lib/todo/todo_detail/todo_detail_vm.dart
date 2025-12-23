@@ -48,3 +48,9 @@ class TodoDetailViewModel extends ViewModel
     }).disposeBy(disposeBag);
   }
 }
+
+extension TodoDetailViewModelInput on TodoDetailViewModel {
+  /// 切换
+  void changeCompleted(bool value) =>
+      dispatch(TodoDetailAction.changeCompleted, data: value);
+}

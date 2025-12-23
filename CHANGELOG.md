@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.2] - 2025-12-23
+
+### Added
+
+- 新增 `StreamOb` 组件（`lib/core/utils/stream_ob.dart:5`），支持在 `builder` 中通过 `watch` 函数自动订阅 `Stream`/`BehaviorSubject`
+
 ## [1.6.1]
 
 ## [1.5.0] - 2025-11-17
