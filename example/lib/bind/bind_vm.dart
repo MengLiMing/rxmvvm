@@ -63,7 +63,6 @@ class BindViewModel extends ViewModel
 extension BindViewModelInput on BindViewModel {
   /// 提交
   void commit() {
-    print("contextcontextcontextcontextcontextcontextcontext${context}");
     dispatch(BindAction.commit);
   }
 
