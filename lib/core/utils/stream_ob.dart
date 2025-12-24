@@ -55,9 +55,6 @@ class RxOb {
   final _StreamObState _state;
   RxOb._(this._state);
 
-  /// 核心通用 watch 方法
-  /// - 不传 selector 时，R 默认为 S（直接观察原始值）
-  /// - 传 selector 时，映射为 R
   R? _watch<S, R>(
     Stream<S> stream, {
     R Function(S)? selector,
@@ -65,13 +62,20 @@ class RxOb {
     bool Function(R previous, R next)? equals,
     Object? key,
   }) {
-    // 如果没有 selector，就用 identity 映射
-    final effectiveSelector = selector ?? (S value) => value as R;
+    final resolvedInitial = initial ??
+        (stream is ValueStream<S>
+            ? (() {
+                try {
+                  if (stream.hasValue) return selector?.call(stream.value);
+                } catch (_) {}
+                return null;
+              })()
+            : null);
 
     return _state._watch<S, R>(
       stream,
-      initial: initial,
-      selector: effectiveSelector,
+      initial: resolvedInitial,
+      selector: selector,
       equals: equals,
       key: key,
     );
@@ -102,7 +106,7 @@ class RxOb {
     final v = _state._watch<S, R>(
       stream,
       initial: init,
-      selector: selector, // 原样传递！关键在这里
+      selector: selector,
       equals: equals,
       key: key,
     );
@@ -115,10 +119,9 @@ class RxOb {
 }
 
 class _StreamObState extends State<StreamOb> {
-  final Map<_SmartSubKey, StreamSubscription<dynamic>> _subs = {};
-  final Map<_SmartSubKey, dynamic> _values = {};
+  final Map<_SmartSubKey, _SubscriptionEntry> _subscriptions = {};
   final Set<_SmartSubKey> _observedThisBuild = {};
-  bool _rebuildScheduled = false;
+  Timer? _rebuildTimer;
 
   R? _resolveInitial<S, R>(
     Stream<S> stream,
@@ -141,41 +144,74 @@ class _StreamObState extends State<StreamOb> {
     R? initial,
     bool Function(R previous, R next)? equals,
   ) {
-    if (_subs.containsKey(subKey)) {
+    // Check if subscription already exists - single lookup
+    final existingEntry = _subscriptions[subKey];
+    if (existingEntry != null) {
       return;
     }
 
-    _values[subKey] = initial;
-
     final sub = listenedStream.distinct(equals).listen((newValue) {
-      final oldValue = _values[subKey] as R?;
+      // Use single lookup to get entry
+      final entry = _subscriptions[subKey];
+      if (entry == null) return; // 订阅已被清理
+
+      final oldValue = entry.value as R?;
 
       final bool isEqual = equals != null
           ? equals(oldValue as R, newValue)
           : identical(oldValue, newValue) || (oldValue == newValue);
 
       if (isEqual) {
-        _values[subKey] = newValue;
+        // 值相等，只更新值但不触发重建
+        entry.updateValue(newValue);
         return;
       }
 
-      _values[subKey] = newValue;
+      // 值不相等，更新值并触发重建
+      entry.updateValue(newValue);
       _scheduleRebuild();
     }, onError: (err, st) {
       RxLogger.logError(err, st);
     }, cancelOnError: false);
 
-    _subs[subKey] = sub;
+    // 创建新的订阅条目，将订阅和初始值存储在一起
+    _subscriptions[subKey] = _SubscriptionEntry(sub, initial);
   }
 
   void _cleanupUnusedSubscriptions() {
-    final prevKeys = _subs.keys.toSet();
+    final prevKeys = _subscriptions.keys.toSet();
     final unused = prevKeys.difference(_observedThisBuild);
 
+    if (unused.isEmpty) return;
+
+    // Batch cleanup with error handling
+    final errors = <Object>[];
+    final toRemove = <_SmartSubKey>[];
+
     for (final key in unused) {
-      _subs[key]?.cancel();
-      _subs.remove(key);
-      _values.remove(key);
+      final entry = _subscriptions[key];
+      if (entry != null) {
+        try {
+          entry.cancel();
+          toRemove.add(key);
+        } catch (error, stackTrace) {
+          errors.add(error);
+          RxLogger.logError(error, stackTrace);
+          // Still mark for removal even if cancel failed
+          toRemove.add(key);
+        }
+      }
+    }
+
+    // Remove all entries in batch
+    for (final key in toRemove) {
+      _subscriptions.remove(key);
+    }
+
+    // Log cleanup summary if there were errors
+    if (errors.isNotEmpty) {
+      RxLogger.warning(
+          'StreamOb cleanup completed with ${errors.length} errors out of ${unused.length} subscriptions');
     }
   }
 
@@ -202,30 +238,51 @@ class _StreamObState extends State<StreamOb> {
 
     _ensureSubscriptionForKey<R>(subKey, finalStream, resolvedInitial, equals);
 
-    return _values[subKey] as R?;
+    // Single lookup to get the value
+    return _subscriptions[subKey]?.value as R?;
   }
 
   @override
   void dispose() {
-    for (final s in _subs.values) {
-      s.cancel();
+    // Cancel rebuild timer if active
+    _rebuildTimer?.cancel();
+    _rebuildTimer = null;
+
+    // Batch cleanup all subscriptions with error handling
+    final errors = <Object>[];
+
+    for (final entry in _subscriptions.values) {
+      try {
+        entry.cancel();
+      } catch (error, stackTrace) {
+        errors.add(error);
+        RxLogger.logError(error, stackTrace);
+      }
     }
-    _subs.clear();
-    _values.clear();
+
+    _subscriptions.clear();
     _observedThisBuild.clear();
+
+    // Log disposal summary if there were errors
+    if (errors.isNotEmpty) {
+      RxLogger.warning(
+          'StreamOb disposal completed with ${errors.length} subscription cleanup errors');
+    }
+
     super.dispose();
   }
 
   void _scheduleRebuild() {
-    if (_rebuildScheduled) return;
-    _rebuildScheduled = true;
-    scheduleMicrotask(() {
+    // Avoid duplicate scheduling
+    if (_rebuildTimer?.isActive ?? false) return;
+
+    _rebuildTimer = Timer(Duration.zero, () {
       if (!mounted) {
+        _rebuildTimer = null;
         return;
       }
-      setState(() {
-        _rebuildScheduled = false;
-      });
+      setState(() {});
+      _rebuildTimer = null;
     });
   }
 
@@ -283,6 +340,25 @@ class _SmartSubKey {
     if (userKey != null) parts.add('userKey=$userKey');
     if (selectorFn != null) parts.add('selector=${selectorFn.hashCode}');
     return 'SmartSubKey(${parts.join(', ')})';
+  }
+}
+
+/// 订阅条目：将订阅和值合并到单一数据结构中
+/// 这样可以减少 Map 查找次数，提高性能
+class _SubscriptionEntry {
+  final StreamSubscription<dynamic> subscription;
+  dynamic value;
+
+  _SubscriptionEntry(this.subscription, this.value);
+
+  /// 更新值
+  void updateValue(dynamic newValue) {
+    value = newValue;
+  }
+
+  /// 取消订阅
+  void cancel() {
+    subscription.cancel();
   }
 }
 
@@ -357,21 +433,6 @@ extension StreamWatchExtension<S> on Stream<S> {
   }) =>
       watcher.watch(
         this,
-        initial: initial,
-        equals: equals,
-        key: key,
-      );
-
-  R? selectBy<R>(
-    RxOb watcher,
-    R Function(S value) selector, {
-    R? initial,
-    bool Function(R previous, R next)? equals,
-    Object? key,
-  }) =>
-      watcher.select(
-        this,
-        selector,
         initial: initial,
         equals: equals,
         key: key,

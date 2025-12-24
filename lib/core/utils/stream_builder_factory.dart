@@ -8,6 +8,8 @@ typedef StreamOperator<T> = Stream<T> Function(Stream<T>);
 /// 不关心AsyncSnapshot状态，只关注数据变化
 ///
 /// 建议在 ViewModel 中处理流转换，不在 UI 层处理
+///
+/// 推荐使用StreamOb代替
 class StreamBuilderFactory {
   StreamBuilderFactory._();
 

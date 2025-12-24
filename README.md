@@ -125,7 +125,7 @@ class CounterWithSubject extends StatelessWidget {
 
 > 性能建议：尽量在 ViewModel 中提前定义好派生流（如 `ageStream`），再在 UI 中通过 `watch` 订阅，而不要在 `build` 中临时 `map` 新的 Stream。
 
-### 4. 使用 StreamBuilderFactory（可选）
+### 4. 使用 StreamBuilderFactory（推荐使用 StreamOb）
 
 如果你习惯原生的 `StreamBuilder` 样式，可以使用 `StreamBuilderFactory`（`lib/core/utils/stream_builder_factory.dart:1`）：
 

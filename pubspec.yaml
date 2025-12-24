@@ -1,6 +1,6 @@
 name: easy_rxmvvm
 description: A state management framework for Flutter using RxDart and MVVM.
-version: 2.0.2
+version: 2.0.3
 homepage: https://github.com/MengLiMing/rxmvvm
 
 environment:

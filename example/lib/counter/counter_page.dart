@@ -22,12 +22,10 @@ class CounterPage extends StatelessWidget {
             body: SizedBox(
               width: double.infinity,
               child: Column(children: [
-                StreamBuilderFactory.buildBehavior(
-                  viewModel.counter,
-                  builder: (context, value, _) {
-                    return Text(value.toString());
-                  },
-                ),
+                StreamOb(builder: (context, watcher, _) {
+                  final count = watcher.watchValue(viewModel.counter);
+                  return Text("$count");
+                }),
                 TextButton(
                   onPressed: () => viewModel.increment(1),
                   child: const Text('+'),

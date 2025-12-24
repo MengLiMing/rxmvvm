@@ -28,16 +28,13 @@ class _EventBusPageState extends State<EventBusPage> with DisposeBagProvider {
           body: Center(
             child: Column(
               children: [
-                StreamBuilderFactory.build<EventAction<DemoEvent>>(
-                  stream: EventBus.onEventStream<DemoEvent>(),
-                  builder: (context, action, _) {
-                    if (action == null) {
-                      return const Text("暂未收到event");
-                    }
-                    return Text(
-                        "收到event: ${action.event}, data: ${action.data}");
-                  },
-                ),
+                StreamOb(builder: (context, watcher, _) {
+                  final action = viewModel.eventActionValue.watchBy(watcher);
+                  if (action == null) {
+                    return const Text("暂未收到event");
+                  }
+                  return Text("收到event: ${action.event}, data: ${action.data}");
+                }),
                 StreamBuilderFactory.buildBehavior(
                   viewModel.counter,
                   builder: (context, value, _) {
@@ -57,6 +54,12 @@ class _EventBusPageState extends State<EventBusPage> with DisposeBagProvider {
 
 class EventBusDemo extends ViewModel {
   final counter = 0.rx;
+
+  late final eventAction = EventBus.onEventStream<DemoEvent>();
+
+  late final eventActionValue =
+      EventBus.onEventStream<DemoEvent>().cast<EventAction<DemoEvent>?>();
+
   @override
   void config() {
     EventBus.onDataListen<DemoEvent, int>(DemoEvent.number, (value) {
